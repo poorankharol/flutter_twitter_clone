@@ -245,7 +245,9 @@ class _ProfileNewState extends State<ProfileNew>
                                   Radius.circular(20),
                                 ),
                                 onPressed: () {
-                                  if (!isMyProfile) {}
+                                  if (!isMyProfile) {
+
+                                  }
                                 },
                                 child: Container(
                                   height: 35,
@@ -273,6 +275,7 @@ class _ProfileNewState extends State<ProfileNew>
                               const BorderRadius.all(Radius.circular(60)),
                           onPressed: () {
                             if (isMyProfile) {
+                              Navigator.pushNamed(context, '/editProfile');
                             } else {}
                           },
                           child: Container(
@@ -454,8 +457,8 @@ class _ProfileNewState extends State<ProfileNew>
               );
             }
 
-            return Center(
-                child: const CircularProgressIndicator(
+            return const Center(
+                child: CircularProgressIndicator(
               color: AppColors.blue,
             ));
           },
