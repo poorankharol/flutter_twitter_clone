@@ -12,7 +12,7 @@ class LoginUserCubit extends Cubit<LoginUserState>
   LoginUserCubit(LoginUserState initialState) : super(initialState);
 
   void loginUser({required String email, required String password}) {
-    _authRepository.register(
+    _authRepository.login(
       email: email,
       password: password,
       authRegistrationListener: this,

@@ -14,6 +14,7 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   final authService = AuthService();
+  TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
@@ -55,10 +56,9 @@ class _RegisterState extends State<Register> {
       listener: (context, state) {
         switch (state) {
           case RegisterUserState.success:
-              Navigator.pushNamed(context, "/home");
+            Navigator.pushNamed(context, "/dashboard");
             break;
           case RegisterUserState.user_exists:
-
             break;
           case RegisterUserState.weak_password:
             ScaffoldMessenger.of(context).showSnackBar(
@@ -68,10 +68,8 @@ class _RegisterState extends State<Register> {
             );
             break;
           case RegisterUserState.failed:
-
             break;
           case RegisterUserState.initial:
-
             break;
         }
       },
@@ -79,8 +77,7 @@ class _RegisterState extends State<Register> {
         if (state == RegisterUserState.failed) {
           return const Scaffold(
               body: Center(
-                  child:
-                      Text('Oops something went wrong!\nTry again later.')));
+                  child: Text('Oops something went wrong!\nTry again later.')));
         }
         return Scaffold(
           appBar: AppBar(
@@ -96,6 +93,55 @@ class _RegisterState extends State<Register> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  TextFormField(
+                    controller: nameController,
+                    autocorrect: false,
+                    keyboardType: TextInputType.name,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Name cannot be empty';
+                      } else if (value.length < 6) {
+                        return 'name too short.';
+                      }
+                      return null;
+                    },
+                    textInputAction: TextInputAction.next,
+                    style: textTheme.titleMedium!.copyWith(fontSize: 16),
+                    decoration: InputDecoration(
+                      hintText: 'Enter Name',
+                      hintStyle: textTheme.titleMedium!.copyWith(fontSize: 16),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 10),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: const BorderSide(
+                          width: 0,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Colors.white,
+                        ),
+                        borderRadius: BorderRadius.circular(
+                          30,
+                        ),
+                      ),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Colors.white,
+                        ),
+                        borderRadius: BorderRadius.circular(
+                          30,
+                        ),
+                      ),
+                      fillColor: Colors.grey.withAlpha(50),
+                      filled: true,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   TextFormField(
                     controller: emailController,
                     autocorrect: false,
@@ -116,8 +162,7 @@ class _RegisterState extends State<Register> {
                     style: textTheme.titleMedium!.copyWith(fontSize: 16),
                     decoration: InputDecoration(
                       hintText: 'Enter Email',
-                      hintStyle:
-                          textTheme.titleMedium!.copyWith(fontSize: 16),
+                      hintStyle: textTheme.titleMedium!.copyWith(fontSize: 16),
                       contentPadding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 10),
                       border: OutlineInputBorder(
@@ -171,8 +216,7 @@ class _RegisterState extends State<Register> {
                     style: textTheme.titleMedium!.copyWith(fontSize: 16),
                     decoration: InputDecoration(
                       hintText: 'Enter Password',
-                      hintStyle:
-                          textTheme.titleMedium!.copyWith(fontSize: 16),
+                      hintStyle: textTheme.titleMedium!.copyWith(fontSize: 16),
                       contentPadding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 10),
                       border: OutlineInputBorder(
@@ -229,8 +273,7 @@ class _RegisterState extends State<Register> {
                     style: textTheme.titleMedium!.copyWith(fontSize: 16),
                     decoration: InputDecoration(
                       hintText: 'Enter Confirm Password',
-                      hintStyle:
-                          textTheme.titleMedium!.copyWith(fontSize: 16),
+                      hintStyle: textTheme.titleMedium!.copyWith(fontSize: 16),
                       contentPadding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 10),
                       border: OutlineInputBorder(
@@ -275,6 +318,7 @@ class _RegisterState extends State<Register> {
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
                           context.read<RegisterUserCubit>().registerUser(
+                              name: nameController.text,
                               email: emailController.text,
                               password: passwordController.text);
                         }

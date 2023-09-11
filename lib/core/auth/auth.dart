@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_twitter_clone/core/auth/auth_registration_listener.dart';
 import 'package:flutter_twitter_clone/core/model/user.dart';
 
@@ -40,16 +42,28 @@ class AuthService {
   }
 
   void register({
+    required String name,
     required String email,
     required String password,
     required AuthRegistrationListener authRegistrationListener,
   }) async {
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      //_currentUser(user);
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user?.uid)
+          .set(
+        {
+          'name': name,
+          'email': userCredential.user?.email,
+        },
+      );
+
       authRegistrationListener.success();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {

@@ -11,11 +11,13 @@ class RegisterUserCubit extends Cubit<RegisterUserState>
 
   RegisterUserCubit(RegisterUserState initialState) : super(initialState);
 
-  void registerUser({required String email, required String password}) {
+  void registerUser(
+      {required String name, required String email, required String password}) {
     _authRepository.register(
       email: email,
       password: password,
       authRegistrationListener: this,
+      name: name,
     );
   }
 

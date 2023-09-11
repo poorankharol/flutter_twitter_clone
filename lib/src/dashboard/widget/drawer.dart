@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class DrawerWidget extends StatelessWidget {
@@ -193,6 +194,17 @@ class DrawerWidget extends StatelessWidget {
                 title: const Text('Help Centre'),
                 onTap: () {
                   Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(
+                  Icons.help_outline_rounded,
+                ),
+                title: const Text('Logout'),
+                onTap: () async {
+                  await FirebaseAuth.instance.signOut().then((value) {
+                    Navigator.pushNamed(context, '/');
+                  });
                 },
               ),
             ],
