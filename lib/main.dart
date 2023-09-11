@@ -9,6 +9,7 @@ import 'package:flutter_twitter_clone/src/add/new_tweet.dart';
 import 'package:flutter_twitter_clone/src/dashboard/cubit/user_profile_cubit.dart';
 import 'package:flutter_twitter_clone/src/dashboard/screens/dashboard.dart';
 import 'package:flutter_twitter_clone/src/dashboard/screens/profile.dart';
+import 'package:flutter_twitter_clone/src/dashboard/screens/profile_new.dart';
 import 'package:flutter_twitter_clone/src/home/home.dart';
 import 'package:flutter_twitter_clone/src/login/cubit/login_user_cubit.dart';
 import 'package:flutter_twitter_clone/src/login/login.dart';
@@ -58,7 +59,7 @@ class MyApp extends StatelessWidget {
           '/register': (context) => const Register(),
           '/dashboard': (context) => const Dashboard(),
           '/newTweet': (context) => const NewTweet(),
-          '/profile': (context) => const Profile(),
+          '/profile': (context) => const ProfileNew(),
         },
       ),
     );
