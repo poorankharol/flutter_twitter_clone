@@ -1,15 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_twitter_clone/core/auth/auth_registration_listener.dart';
-import 'package:flutter_twitter_clone/core/model/user.dart';
 
 class AuthService {
   FirebaseAuth auth = FirebaseAuth.instance;
-
-  UserModel? _currentUser(User user) {
-    return user != null ? UserModel(id: user.uid) : null;
-  }
 
   void login({
     required String email,

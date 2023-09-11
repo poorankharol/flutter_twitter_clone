@@ -12,6 +12,6 @@ class UserProfileError extends UserProfileState {
 }
 
 class UserProfileData extends UserProfileState {
-  final List<PostModel> data;
+  final UserModel data;
   UserProfileData(this.data);
 }

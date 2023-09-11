@@ -6,6 +6,7 @@ import 'package:flutter_twitter_clone/core/auth/posts.dart';
 import 'package:flutter_twitter_clone/core/constants/apptheme.dart';
 import 'package:flutter_twitter_clone/src/add/cubit/add_post_cubit.dart';
 import 'package:flutter_twitter_clone/src/add/new_tweet.dart';
+import 'package:flutter_twitter_clone/src/dashboard/cubit/image/user_image_cubit.dart';
 import 'package:flutter_twitter_clone/src/dashboard/cubit/user_profile_cubit.dart';
 import 'package:flutter_twitter_clone/src/dashboard/screens/dashboard.dart';
 import 'package:flutter_twitter_clone/src/dashboard/screens/profile.dart';
@@ -17,6 +18,7 @@ import 'package:flutter_twitter_clone/src/register/cubit/register_user_cubit.dar
 import 'package:flutter_twitter_clone/src/register/register.dart';
 import 'package:flutter_twitter_clone/src/splash/splash.dart';
 
+import 'core/auth/user.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -43,8 +45,12 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<PostCubit>(
           create: (_) => PostCubit(PostState.initial),
-        ),BlocProvider<UserProfileCubit>(
-          create: (_) => UserProfileCubit(PostService()),
+        ),
+        BlocProvider<UserProfileCubit>(
+          create: (_) => UserProfileCubit(PostService(),UserService()),
+        ),
+        BlocProvider<UserImageCubit>(
+          create: (_) => UserImageCubit(UserService()),
         ),
       ],
       child: MaterialApp(

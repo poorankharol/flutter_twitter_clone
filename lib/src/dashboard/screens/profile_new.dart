@@ -1,15 +1,19 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_twitter_clone/core/constants/appcolors.dart';
 import 'package:flutter_twitter_clone/core/widget/ripple_button.dart';
+import 'package:flutter_twitter_clone/src/dashboard/cubit/image/user_image_cubit.dart';
 import 'package:flutter_twitter_clone/src/dashboard/widget/tweet_item.dart';
 import 'package:flutter_twitter_clone/src/home/model/post_model.dart';
+import 'package:image_picker/image_picker.dart';
 
-import '../../../core/helper/utility.dart';
+import '../../../core/model/user.dart';
 import '../../../core/widget/cache_image.dart';
 import '../../../core/widget/circular_image.dart';
-import '../../../core/widget/customLoader.dart';
 import '../../../core/widget/customWidgets.dart';
 import '../../../core/widget/emptyList.dart';
 import '../../../core/widget/url_text/customUrlText.dart';
@@ -28,6 +32,7 @@ class _ProfileNewState extends State<ProfileNew>
   int pageIndex = 0;
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   late TabController _tabController;
+  String profilePicUrl = '';
 
   @override
   void initState() {
@@ -38,7 +43,9 @@ class _ProfileNewState extends State<ProfileNew>
     // });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final cubit = context.read<UserProfileCubit>();
-      cubit.fetchTweetsData(FirebaseAuth.instance.currentUser!.uid);
+      cubit.fetchData(FirebaseAuth.instance.currentUser!.uid);
+      //final userImageCubit = context.read<UserImageCubit>();
+      //userImageCubit.getProfilePicture(FirebaseAuth.instance.currentUser!.uid);
     });
     _tabController = TabController(length: 5, vsync: this);
     super.initState();
@@ -60,11 +67,11 @@ class _ProfileNewState extends State<ProfileNew>
   Widget _tweetList(
     BuildContext context,
     //ProfileState authState,
-    List<PostModel> tweetsList,
+    List<PostModel>? tweetsList,
     bool isReply,
     bool isMedia,
   ) {
-    List<PostModel> list = tweetsList;
+    List<PostModel> list = tweetsList!;
 
     /// If user hasn't tweeted yet
     // if (tweetsList == null) {
@@ -136,7 +143,7 @@ class _ProfileNewState extends State<ProfileNew>
               );
   }
 
-  SliverAppBar getAppbar() {
+  SliverAppBar getAppbar(BuildContext context, UserModel model) {
     return SliverAppBar(
       forceElevated: false,
       expandedHeight: 200,
@@ -185,11 +192,15 @@ class _ProfileNewState extends State<ProfileNew>
             Container(
               height: 180,
               padding: const EdgeInsets.only(top: 28),
-              child: const CacheImage(
-                //authState.profileUserModel.bannerImage ??
-                path:
-                    'https://pbs.twimg.com/profile_banners/457684585/1510495215/1500x500',
-                fit: BoxFit.fill,
+              child: InkWell(
+                onTap: () {
+                  pickImage(context, false);
+                },
+                child: CacheImage(
+                  path: model.bannerImage ??
+                      'https://pbs.twimg.com/profile_banners/457684585/1510495215/1500x500',
+                  fit: BoxFit.fill,
+                ),
               ),
             ),
             Container(
@@ -211,10 +222,11 @@ class _ProfileNewState extends State<ProfileNew>
                         shape: BoxShape.circle),
                     child: RippleButton(
                       borderRadius: BorderRadius.circular(50),
-                      onPressed: () {},
-                      child: const CircularImage(
-                        path:
-                            'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bWFsZSUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D&w=1000&q=80',
+                      onPressed: () {
+                        pickImage(context, true);
+                      },
+                      child: CircularImage(
+                        path: model.profileImage,
                         height: 80,
                       ),
                     ),
@@ -323,10 +335,22 @@ class _ProfileNewState extends State<ProfileNew>
     return false;
   }
 
-  final List<Tab> myTabs = <Tab>[
-    const Tab(text: "kArtwork"),
-    const Tab(text: "kPastJobs")
-  ];
+  File? image;
+
+  Future pickImage(BuildContext context, bool profilePic) async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (image == null) return;
+      final imageTemp = File(image.path);
+      //setState(() => this.image = imageTemp);
+      final cubit = context.read<UserImageCubit>();
+      profilePic
+          ? cubit.uploadProfilePicture(imageTemp)
+          : cubit.uploadBanner(imageTemp);
+    } on PlatformException catch (e) {
+      print('Failed to pick image: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -335,26 +359,28 @@ class _ProfileNewState extends State<ProfileNew>
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: Colors.white,
-        body: NestedScrollView(
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return <Widget>[
-              getAppbar(),
-              SliverToBoxAdapter(
-                child: Container(
-                  color: Colors.white,
-                  child: UserNameRowWidget(
-                    isMyProfile: isMyProfile,
-                  ),
-                ),
-              ),
-            ];
-          },
-          body: BlocConsumer<UserProfileCubit, UserProfileState>(
-            listener: (context, state) {},
-            builder: (context, state) {
-              if (state is UserProfileData) {
-                var data = state.data;
-                return DefaultTabController(
+        body: BlocBuilder<UserProfileCubit, UserProfileState>(
+          builder: (context, state) {
+            if (state is UserProfileData) {
+              UserModel data = state.data;
+              isMyProfile = data.uid == FirebaseAuth.instance.currentUser!.uid;
+              return NestedScrollView(
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
+                  return <Widget>[
+                    getAppbar(context, data),
+                    SliverToBoxAdapter(
+                      child: Container(
+                        color: Colors.white,
+                        child: UserNameRowWidget(
+                          isMyProfile: isMyProfile,
+                          user: data,
+                        ),
+                      ),
+                    ),
+                  ];
+                },
+                body: DefaultTabController(
                   length: 5,
                   child: Scaffold(
                     appBar: AppBar(
@@ -411,24 +437,28 @@ class _ProfileNewState extends State<ProfileNew>
                         controller: _tabController,
                         children: [
                           /// Display all independent tweets list
-                          _tweetList(context, data, false, false),
+                          _tweetList(context, data.tweets, false, false),
 
                           /// Display all reply tweet list
-                          _tweetList(context, data, true, false),
+                          _tweetList(context, [], true, false),
 
                           /// Display all reply and comments tweet list
-                          _tweetList(context, data, false, true),
-                          _tweetList(context, data, false, true),
-                          _tweetList(context, data, false, true)
+                          _tweetList(context, [], false, true),
+                          _tweetList(context, [], false, true),
+                          _tweetList(context, [], false, true)
                         ],
                       ),
                     ),
                   ),
-                );
-              }
-              return const SizedBox();
-            },
-          ),
+                ),
+              );
+            }
+
+            return Center(
+                child: const CircularProgressIndicator(
+              color: AppColors.blue,
+            ));
+          },
         ),
       ),
     );
@@ -439,11 +469,11 @@ class UserNameRowWidget extends StatelessWidget {
   const UserNameRowWidget({
     Key? key,
     required this.isMyProfile,
+    required this.user,
   }) : super(key: key);
 
   final bool isMyProfile;
-
-  //final UserModel user;
+  final UserModel user;
 
   String getBio(String bio) {
     if (isMyProfile) {
@@ -493,9 +523,9 @@ class UserNameRowWidget extends StatelessWidget {
           ),
           child: Row(
             children: <Widget>[
-              const Text(
-                'Pooran Kharol',
-                style: TextStyle(
+              Text(
+                user.name,
+                style: const TextStyle(
                   color: Colors.black,
                   fontSize: 16,
                   fontWeight: FontWeight.w800,
@@ -603,7 +633,9 @@ class UserNameRowWidget extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 5,),
+        const SizedBox(
+          height: 5,
+        ),
         Container(
           alignment: Alignment.center,
           child: Row(

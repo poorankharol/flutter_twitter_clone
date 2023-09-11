@@ -17,7 +17,7 @@ class _ProfileState extends State<Profile> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final cubit = context.read<UserProfileCubit>();
-      cubit.fetchTweetsData(FirebaseAuth.instance.currentUser!.uid);
+      cubit.fetchData(FirebaseAuth.instance.currentUser!.uid);
     });
   }
 
