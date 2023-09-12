@@ -15,9 +15,12 @@ class UserService {
       uid: uid,
       name: document['name'] ?? '',
       email: document['email'] ?? '',
-      //phoneNumber: document['phoneNumber'] ?? '',
       profileImage: document['profileImage'] ?? '',
       bannerImage: document['bannerImage'] ?? '',
+      bio: document['bio'] ?? '',
+      location: document['location'] ?? '',
+      website: document['website'] ?? '',
+      dob: document['dob'] ?? '',
     );
   }
 

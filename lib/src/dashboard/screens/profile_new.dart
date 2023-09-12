@@ -38,17 +38,18 @@ class _ProfileNewState extends State<ProfileNew>
   void initState() {
     // WidgetsBinding.instance.addPostFrameCallback((_) {
     //   var authState = Provider.of<ProfileState>(context, listen: false);
-    //
     //   isMyProfile = authState.isMyProfile;
     // });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final cubit = context.read<UserProfileCubit>();
-      cubit.fetchData(FirebaseAuth.instance.currentUser!.uid);
-      //final userImageCubit = context.read<UserImageCubit>();
-      //userImageCubit.getProfilePicture(FirebaseAuth.instance.currentUser!.uid);
+      fetchData();
     });
     _tabController = TabController(length: 5, vsync: this);
     super.initState();
+  }
+
+  void fetchData() {
+    final cubit = context.read<UserProfileCubit>();
+    cubit.fetchData(FirebaseAuth.instance.currentUser!.uid);
   }
 
   @override
@@ -194,12 +195,29 @@ class _ProfileNewState extends State<ProfileNew>
               padding: const EdgeInsets.only(top: 28),
               child: InkWell(
                 onTap: () {
-                  pickImage(context, false);
+                  //pickImage(context, false);
                 },
-                child: CacheImage(
-                  path: model.bannerImage ??
-                      'https://pbs.twimg.com/profile_banners/457684585/1510495215/1500x500',
-                  fit: BoxFit.fill,
+                child: BlocConsumer<UserImageCubit, UserImageState>(
+                  listener: (context, state) {},
+                  builder: (context, state) {
+                    if (state is UserImageBannerData) {
+                      var url = state.url;
+                      return CacheImage(
+                        path: url,
+                        fit: BoxFit.fill,
+                      );
+                    }
+                    if (state is UserImageBannerLoading) {
+                      return const CircularProgressIndicator(
+                        color: AppColors.blue,
+                      );
+                    }
+                    return CacheImage(
+                      path: model.bannerImage ??
+                          'https://pbs.twimg.com/profile_banners/457684585/1510495215/1500x500',
+                      fit: BoxFit.fill,
+                    );
+                  },
                 ),
               ),
             ),
@@ -223,11 +241,29 @@ class _ProfileNewState extends State<ProfileNew>
                     child: RippleButton(
                       borderRadius: BorderRadius.circular(50),
                       onPressed: () {
-                        pickImage(context, true);
+                        //pickImage(context, true);
                       },
-                      child: CircularImage(
-                        path: model.profileImage,
-                        height: 80,
+                      child: BlocBuilder<UserImageCubit, UserImageState>(
+                        builder: (context, state) {
+                          if (state is UserImageData) {
+                            var url = state.url;
+                            return CircularImage(
+                              path: url,
+                              height: 80,
+                            );
+                          }
+                          if (state is UserImageLoading) {
+                            return const Center(
+                              child: CircularProgressIndicator(
+                                color: AppColors.blue,
+                              ),
+                            );
+                          }
+                          return CircularImage(
+                            path: model.profileImage,
+                            height: 80,
+                          );
+                        },
                       ),
                     ),
                   ),
@@ -245,9 +281,7 @@ class _ProfileNewState extends State<ProfileNew>
                                   Radius.circular(20),
                                 ),
                                 onPressed: () {
-                                  if (!isMyProfile) {
-
-                                  }
+                                  if (!isMyProfile) {}
                                 },
                                 child: Container(
                                   height: 35,
@@ -338,22 +372,7 @@ class _ProfileNewState extends State<ProfileNew>
     return false;
   }
 
-  File? image;
 
-  Future pickImage(BuildContext context, bool profilePic) async {
-    try {
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-      if (image == null) return;
-      final imageTemp = File(image.path);
-      //setState(() => this.image = imageTemp);
-      final cubit = context.read<UserImageCubit>();
-      profilePic
-          ? cubit.uploadProfilePicture(imageTemp)
-          : cubit.uploadBanner(imageTemp);
-    } on PlatformException catch (e) {
-      print('Failed to pick image: $e');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -55,6 +55,13 @@ class AuthService {
         {
           'name': name,
           'email': userCredential.user?.email,
+          "uid": userCredential.user?.uid,
+          'profileImage': '',
+          'bannerImage': '',
+          'bio': '',
+          'location': '',
+          'website': '',
+          'dob': '',
         },
       );
 

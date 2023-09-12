@@ -24,9 +24,9 @@ class UserImageCubit extends Cubit<UserImageState> {
   }
 
   Future<void> uploadBanner(File profile) async {
-    emit(UserImageLoading());
+    emit(UserImageBannerLoading());
     String url = await _repository.updateBanner(bannerImage: profile);
-    emit(UserImageData(url));
+    emit(UserImageBannerData(url));
   }
 
 }
