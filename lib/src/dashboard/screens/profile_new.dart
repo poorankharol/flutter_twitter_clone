@@ -68,13 +68,11 @@ class _ProfileNewState extends State<ProfileNew>
     return true;
   }
 
-  Widget _tweetList(
-    BuildContext context,
-    //ProfileState authState,
-    List<PostModel>? tweetsList,
-    bool isReply,
-    bool isMedia,
-  ) {
+  Widget _tweetList(BuildContext context,
+      //ProfileState authState,
+      List<PostModel>? tweetsList,
+      bool isReply,
+      bool isMedia,) {
     List<PostModel> list = tweetsList!;
 
     /// If user hasn't tweeted yet
@@ -101,50 +99,55 @@ class _ProfileNewState extends State<ProfileNew>
 
     /// if [authState.isbusy] is true then an loading indicator will be displayed on screen.
     return
-        // authState.isbusy
-        //   ? SizedBox(
-        //       height: MediaQuery.of(context).size.height - 180,
-        //       child: const CustomScreenLoader(
-        //         height: double.infinity,
-        //         width: double.infinity,
-        //         backgroundColor: Colors.white,
-        //       ),
-        //     )
-        //
-        //   /// if tweet list is empty or null then need to show user a message
-        //   :
-        list.isEmpty
-            ? Container(
-                padding: const EdgeInsets.only(top: 50, left: 30, right: 30),
-                child: NotifyText(
-                  title: isMyProfile
-                      ? 'You haven\'t ${isReply ? 'reply to any Tweet' : isMedia ? 'post any media Tweet yet' : 'post any Tweet yet'}'
-                      : '${"user"} hasn\'t ${isReply ? 'reply to any Tweet' : isMedia ? 'post any media Tweet yet' : 'post any Tweet yet'}',
-                  subTitle: isMyProfile
-                      ? 'Tap tweet button to add new'
-                      : 'Once he\'ll do, they will be shown up here',
-                ),
-              )
+      // authState.isbusy
+      //   ? SizedBox(
+      //       height: MediaQuery.of(context).size.height - 180,
+      //       child: const CustomScreenLoader(
+      //         height: double.infinity,
+      //         width: double.infinity,
+      //         backgroundColor: Colors.white,
+      //       ),
+      //     )
+      //
+      //   /// if tweet list is empty or null then need to show user a message
+      //   :
+      list.isEmpty
+          ? Container(
+        padding: const EdgeInsets.only(top: 50, left: 30, right: 30),
+        child: NotifyText(
+          title: isMyProfile
+              ? 'You haven\'t ${isReply ? 'reply to any Tweet' : isMedia
+              ? 'post any media Tweet yet'
+              : 'post any Tweet yet'}'
+              : '${"user"} hasn\'t ${isReply ? 'reply to any Tweet' : isMedia
+              ? 'post any media Tweet yet'
+              : 'post any Tweet yet'}',
+          subTitle: isMyProfile
+              ? 'Tap tweet button to add new'
+              : 'Once he\'ll do, they will be shown up here',
+        ),
+      )
 
-            /// If tweets available then tweet list will displayed
-            : ListView.builder(
-                padding: const EdgeInsets.symmetric(vertical: 0),
-                itemCount: list.length,
-                itemBuilder: (context, index) => Container(
-                  color: AppColors.white,
-                  child: TweetItem(
-                    model: list[index],
-                    // isDisplayOnProfile: true,
-                    // trailing: TweetBottomSheet().tweetOptionIcon(
-                    //   context,
-                    //   model: list[index],
-                    //   type: TweetType.Tweet,
-                    //   scaffoldKey: scaffoldKey,
-                    // ),
-                    // scaffoldKey: scaffoldKey,
-                  ),
-                ),
-              );
+      /// If tweets available then tweet list will displayed
+          : ListView.builder(
+        padding: const EdgeInsets.symmetric(vertical: 0),
+        itemCount: list.length,
+        itemBuilder: (context, index) =>
+            Container(
+              color: AppColors.white,
+              child: TweetItem(
+                model: list[index],
+                // isDisplayOnProfile: true,
+                // trailing: TweetBottomSheet().tweetOptionIcon(
+                //   context,
+                //   model: list[index],
+                //   type: TweetType.Tweet,
+                //   scaffoldKey: scaffoldKey,
+                // ),
+                // scaffoldKey: scaffoldKey,
+              ),
+            ),
+      );
   }
 
   SliverAppBar getAppbar(BuildContext context, UserModel model) {
@@ -229,8 +232,9 @@ class _ProfileNewState extends State<ProfileNew>
                   //pickImage(context, false);
                 },
                 child: CacheImage(
-                  path: model.bannerImage ??
-                      'https://pbs.twimg.com/profile_banners/457684585/1510495215/1500x500',
+                  path: model.bannerImage!.isEmpty
+                      ? 'https://firebasestorage.googleapis.com/v0/b/twitter-clone-43c3e.appspot.com/o/placeholder%2Fbanner-defau.jpg?alt=media&token=5adbc54c-2869-4689-8d94-4e21e72100e6'
+                      : model.bannerImage!,
                   fit: BoxFit.fitWidth,
                 ),
               ),
@@ -258,7 +262,9 @@ class _ProfileNewState extends State<ProfileNew>
                         //pickImage(context, true);
                       },
                       child: CircularImage(
-                        path: model.profileImage,
+                        path: model.profileImage!.isEmpty
+                            ? "https://firebasestorage.googleapis.com/v0/b/twitter-clone-43c3e.appspot.com/o/placeholder%2Fuser.png?alt=media&token=9c85ab40-b21f-4b95-b661-19f03ebd5b26"
+                            : model.profileImage!,
                         height: 80,
                       ),
                     ),
@@ -269,40 +275,40 @@ class _ProfileNewState extends State<ProfileNew>
                       children: [
                         isMyProfile
                             ? Container(
-                                height: 40,
-                              )
+                          height: 40,
+                        )
                             : RippleButton(
-                                splashColor: AppColors.blue.withAlpha(100),
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(20),
-                                ),
-                                onPressed: () {
-                                  if (!isMyProfile) {}
-                                },
-                                child: Container(
-                                  height: 35,
-                                  width: 35,
-                                  padding: const EdgeInsets.only(
-                                      bottom: 0, top: 0, right: 0, left: 0),
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: isMyProfile
-                                              ? Colors.black87.withAlpha(180)
-                                              : Colors.blue,
-                                          width: 1),
-                                      shape: BoxShape.circle),
-                                  child: const Icon(
-                                    Icons.call,
-                                    color: Colors.blue,
-                                    size: 20,
-                                  ),
-                                ),
-                              ),
+                          splashColor: AppColors.blue.withAlpha(100),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(20),
+                          ),
+                          onPressed: () {
+                            if (!isMyProfile) {}
+                          },
+                          child: Container(
+                            height: 35,
+                            width: 35,
+                            padding: const EdgeInsets.only(
+                                bottom: 0, top: 0, right: 0, left: 0),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: isMyProfile
+                                        ? Colors.black87.withAlpha(180)
+                                        : Colors.blue,
+                                    width: 1),
+                                shape: BoxShape.circle),
+                            child: const Icon(
+                              Icons.call,
+                              color: Colors.blue,
+                              size: 20,
+                            ),
+                          ),
+                        ),
                         const SizedBox(width: 10),
                         RippleButton(
                           splashColor: AppColors.blue.withAlpha(100),
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(60)),
+                          const BorderRadius.all(Radius.circular(60)),
                           onPressed: () async {
                             if (isMyProfile) {
                               var result = await Navigator.pushNamed(
@@ -323,8 +329,8 @@ class _ProfileNewState extends State<ProfileNew>
                               color: isMyProfile
                                   ? AppColors.white
                                   : isFollower()
-                                      ? AppColors.blue
-                                      : AppColors.white,
+                                  ? AppColors.blue
+                                  : AppColors.white,
                               border: Border.all(
                                   color: isMyProfile
                                       ? Colors.black87.withAlpha(180)
@@ -336,14 +342,14 @@ class _ProfileNewState extends State<ProfileNew>
                               isMyProfile
                                   ? 'Edit Profile'
                                   : isFollower()
-                                      ? 'Following'
-                                      : 'Follow',
+                                  ? 'Following'
+                                  : 'Follow',
                               style: TextStyle(
                                 color: isMyProfile
                                     ? Colors.black87.withAlpha(180)
                                     : isFollower()
-                                        ? AppColors.white
-                                        : Colors.blue,
+                                    ? AppColors.white
+                                    : Colors.blue,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -380,7 +386,7 @@ class _ProfileNewState extends State<ProfileNew>
       onWillPop: _onWillPop,
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor:  Colors.white,
+        backgroundColor: Colors.white,
         body: BlocBuilder<UserProfileCubit, UserProfileState>(
           builder: (context, state) {
             if (state is UserProfileData) {
@@ -448,7 +454,7 @@ class _ProfileNewState extends State<ProfileNew>
                             child: Text(
                               "Likes",
                               style:
-                                  TextStyle(fontSize: 16, color: Colors.black),
+                              TextStyle(fontSize: 16, color: Colors.black),
                             ),
                           ),
                         ],
@@ -459,6 +465,7 @@ class _ProfileNewState extends State<ProfileNew>
                       child: TabBarView(
                         controller: _tabController,
                         children: [
+
                           /// Display all independent tweets list
                           _tweetList(context, data.tweets, false, false),
 
@@ -479,8 +486,8 @@ class _ProfileNewState extends State<ProfileNew>
 
             return const Center(
                 child: CircularProgressIndicator(
-              color: AppColors.blue,
-            ));
+                  color: AppColors.blue,
+                ));
           },
         ),
       ),
@@ -508,12 +515,10 @@ class UserNameRowWidget extends StatelessWidget {
     }
   }
 
-  Widget _textButton(
-    BuildContext context,
-    String count,
-    String text,
-    Function onPressed,
-  ) {
+  Widget _textButton(BuildContext context,
+      String count,
+      String text,
+      Function onPressed,) {
     return InkWell(
       onTap: () {
         onPressed();
@@ -535,7 +540,9 @@ class UserNameRowWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var textTheme = Theme.of(context).textTheme;
+    var textTheme = Theme
+        .of(context)
+        .textTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -559,11 +566,11 @@ class UserNameRowWidget extends StatelessWidget {
               ),
               true
                   ? customIcon(context,
-                      icon: Icons.check,
-                      isTwitterIcon: true,
-                      iconColor: AppColors.blue,
-                      size: 13,
-                      paddingIcon: 3)
+                  icon: Icons.check,
+                  isTwitterIcon: true,
+                  iconColor: AppColors.blue,
+                  size: 13,
+                  paddingIcon: 3)
                   : const SizedBox(width: 0),
             ],
           ),
@@ -575,15 +582,15 @@ class UserNameRowWidget extends StatelessWidget {
             style: textTheme.titleMedium!.copyWith(fontSize: 13),
           ),
         ),
-        Padding(
+        user.bio!.isNotEmpty ? Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           child: Row(
             children: [
               customText(getBio(user.bio!), style: textTheme.titleMedium),
             ],
           ),
-        ),
-        Padding(
+        ): const SizedBox(height: 10,),
+        user.location!.isNotEmpty ? Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           child: Row(
             children: [
@@ -602,28 +609,27 @@ class UserNameRowWidget extends StatelessWidget {
               const SizedBox(
                 width: 0,
               ),
-              user.location!.isNotEmpty
-                  ? const Icon(
-                      Icons.location_on_outlined,
-                      color: Colors.black54,
-                      size: 18,
-                    )
-                  : const SizedBox.shrink(),
-              user.location!.isNotEmpty
-                  ? Container(
-                      margin: const EdgeInsets.only(left: 5),
-                      child: Text(
-                        user.location!,
-                        style: const TextStyle(
-                            fontSize: 14, color: Colors.black54),
-                      ),
-                    )
-                  : const SizedBox.shrink(),
+              const Icon(
+                Icons.location_on_outlined,
+                color: Colors.black54,
+                size: 18,
+              ),
+              Container(
+                margin: const EdgeInsets.only(left: 5),
+                child: Text(
+                  user.location!,
+                  style: const TextStyle(
+                      fontSize: 14, color: Colors.black54),
+                ),
+              ),
+
             ],
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        ) : const SizedBox.shrink(),
+        user.website!.isNotEmpty
+            ? Padding(
+          padding:
+          const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           child: Row(
             children: [
               const Icon(
@@ -637,14 +643,15 @@ class UserNameRowWidget extends StatelessWidget {
                   onOpen: (link) async {
                     await Utility.launchURL(link.url);
                   },
-                  linkStyle: const TextStyle(decoration: TextDecoration.none),
+                  linkStyle:
+                  const TextStyle(decoration: TextDecoration.none),
                   text: user.website!,
                   style: const TextStyle(
                     color: Colors.blueAccent,
                     fontSize: 14,
                   ),
-                  options:
-                      const LinkifyOptions(removeWww: true, humanize: true),
+                  options: const LinkifyOptions(
+                      removeWww: true, humanize: true),
                 ),
               ),
               // const SizedBox(
@@ -664,7 +671,8 @@ class UserNameRowWidget extends StatelessWidget {
               // ),
             ],
           ),
-        ),
+        )
+            : const SizedBox.shrink(),
         const SizedBox(
           height: 5,
         ),

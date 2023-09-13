@@ -46,8 +46,9 @@ class _EditProfileState extends State<EditProfile> {
               }
 
               return CacheImage(
-                path: user.bannerImage ??
-                    'https://pbs.twimg.com/profile_banners/457684585/1510495215/1500x500',
+                path: user.bannerImage!.isEmpty
+                    ? 'https://firebasestorage.googleapis.com/v0/b/twitter-clone-43c3e.appspot.com/o/placeholder%2Fbanner-defau.jpg?alt=media&token=5adbc54c-2869-4689-8d94-4e21e72100e6'
+                    : user.bannerImage!,
                 fit: BoxFit.fitWidth,
               );
             },
@@ -112,7 +113,9 @@ class _EditProfileState extends State<EditProfile> {
                 }
                 return CircleAvatar(
                   radius: 37,
-                  backgroundImage: NetworkImage(user.profileImage!),
+                  backgroundImage: NetworkImage(user.profileImage!.isEmpty
+                      ? 'https://firebasestorage.googleapis.com/v0/b/twitter-clone-43c3e.appspot.com/o/placeholder%2Fuser.png?alt=media&token=9c85ab40-b21f-4b95-b661-19f03ebd5b26'
+                      : user.profileImage!),
                 );
               },
             ),

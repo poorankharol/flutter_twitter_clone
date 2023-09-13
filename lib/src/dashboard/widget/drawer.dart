@@ -1,8 +1,37 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class DrawerWidget extends StatelessWidget {
+import '../../../core/helper/sharedprefs.dart';
+import '../../../core/model/user.dart';
+
+class DrawerWidget extends StatefulWidget {
   const DrawerWidget({super.key});
+
+  @override
+  State<DrawerWidget> createState() => _DrawerWidgetState();
+}
+
+class _DrawerWidgetState extends State<DrawerWidget> {
+  SharedPref sharedPref = SharedPref();
+  UserModel? userLoad;
+
+  loadSharedPrefs() async {
+    try {
+      UserModel user = UserModel.fromJson(await sharedPref.read("user"));
+      setState(() {
+        userLoad = user;
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    loadSharedPrefs();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,18 +53,29 @@ class DrawerWidget extends StatelessWidget {
                   radius: 25,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(30),
-                    child: Image.asset(
-                      "assets/images/users.jpg",
-                      width: 50,
-                      height: 50,
-                    ),
+                    child: userLoad != null
+                        ? CachedNetworkImage(
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.cover,
+                            imageUrl: userLoad!.profileImage!.isEmpty
+                                ? 'https://firebasestorage.googleapis.com/v0/b/twitter-clone-43c3e.appspot.com/o/placeholder%2Fuser.png?alt=media&token=9c85ab40-b21f-4b95-b661-19f03ebd5b26'
+                                : userLoad!.profileImage!,
+                          )
+                        : CachedNetworkImage(
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.cover,
+                            imageUrl:
+                                'https://firebasestorage.googleapis.com/v0/b/twitter-clone-43c3e.appspot.com/o/placeholder%2Fuser.png?alt=media&token=9c85ab40-b21f-4b95-b661-19f03ebd5b26',
+                          ),
                   ),
                 ),
                 const SizedBox(
                   height: 10,
                 ),
                 Text(
-                  'Pooran Kharol',
+                  userLoad!.name ?? '',
                   style: textTheme.titleMedium!.copyWith(
                     fontWeight: FontWeight.bold,
                   ),

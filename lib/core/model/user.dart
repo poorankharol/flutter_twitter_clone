@@ -25,14 +25,25 @@ class UserModel {
     this.dob,
   });
 
-  Map<String, dynamic> toMap() {
+  UserModel.fromJson(Map<String, dynamic> json)
+      : uid = json['uid'],
+        name = json['name'],
+        email = json['email'],
+        profileImage = json['profileImage'],
+        bannerImage = json['bannerImage'],
+        bio = json['bio'],
+        location = json['location'],
+        website = json['website'],
+        dob = json['dob'];
+
+  Map<String, dynamic> toJson() {
     return {
       'uid': uid,
       'name': name,
       'email': email,
       'profileImage': profileImage,
       'bannerImage': bannerImage,
-      'tweets': tweets,
+      //'tweets': tweets,
       'bio': bio,
       'location': location,
       'website': website,

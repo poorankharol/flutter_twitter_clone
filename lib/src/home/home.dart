@@ -8,14 +8,6 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {},
-      //   backgroundColor: AppColors.blue,
-      //   child: const Icon(
-      //     Icons.add,
-      //     color: Colors.white,
-      //   ),
-      // ),
       floatingActionButton: SpeedDial(
         //Speed dial menu
         icon: Icons.add,
