@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_twitter_clone/core/auth/posts.dart';
 import 'package:flutter_twitter_clone/core/constants/apptheme.dart';
+import 'package:flutter_twitter_clone/core/model/user.dart';
 import 'package:flutter_twitter_clone/src/add/cubit/add_post_cubit.dart';
 import 'package:flutter_twitter_clone/src/add/new_tweet.dart';
 import 'package:flutter_twitter_clone/src/dashboard/cubit/image/user_image_cubit.dart';
@@ -48,7 +49,7 @@ class MyApp extends StatelessWidget {
           create: (_) => PostCubit(PostState.initial),
         ),
         BlocProvider<UserProfileCubit>(
-          create: (_) => UserProfileCubit(PostService(),UserService()),
+          create: (_) => UserProfileCubit(UserService()),
         ),
         BlocProvider<UserImageCubit>(
           create: (_) => UserImageCubit(UserService()),

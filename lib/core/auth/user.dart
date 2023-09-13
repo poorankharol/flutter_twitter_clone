@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
+import '../../src/home/model/post_model.dart';
 import '../model/user.dart';
 
 class UserService {
@@ -24,18 +25,24 @@ class UserService {
     );
   }
 
-  // UserModel _postListFromSnapshot(QuerySnapshot querySnapshot) {
-  //   return querySnapshot.docs.map((doc) {
-  //     Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
-  //     return UserModel(
-  //       uid: "",
-  //       email: data['email'],
-  //       phoneNumber: data['phoneNumber'] ?? '',
-  //       profileImage: data['profileImage'] ?? '',
-  //       bannerImage: data['bannerImage'] ?? '',
-  //     );
-  //   });
-  // }
+  List<PostModel> _postListFromSnapshot(QuerySnapshot querySnapshot) {
+    return querySnapshot.docs.map((doc) {
+      Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
+      return PostModel(
+          id: doc.id,
+          creator: data['creator'] ?? '',
+          message: data['text'] ?? '',
+          timestamp: data['timeStamp'] ?? 0);
+    }).toList();
+  }
+
+  Stream<List<PostModel>> getPostByUser({required String uid}) {
+    return FirebaseFirestore.instance
+        .collection("posts")
+        .where('creator', isEqualTo: uid)
+        .snapshots()
+        .map(_postListFromSnapshot);
+  }
 
   Future<String> getProfilePicture({
     required String uid,
@@ -94,5 +101,12 @@ class UserService {
       downloadUrl = value;
     });
     return downloadUrl;
+  }
+
+  Future<void> updateProfile(UserModel userModel) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .update(userModel.toFireStoreMap());
   }
 }

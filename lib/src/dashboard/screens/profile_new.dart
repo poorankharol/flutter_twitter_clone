@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_twitter_clone/core/constants/appcolors.dart';
 import 'package:flutter_twitter_clone/core/widget/ripple_button.dart';
 import 'package:flutter_twitter_clone/src/dashboard/cubit/image/user_image_cubit.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_twitter_clone/src/dashboard/widget/tweet_item.dart';
 import 'package:flutter_twitter_clone/src/home/model/post_model.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../core/helper/utility.dart';
 import '../../../core/model/user.dart';
 import '../../../core/widget/cache_image.dart';
 import '../../../core/widget/circular_image.dart';
@@ -33,6 +35,7 @@ class _ProfileNewState extends State<ProfileNew>
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   late TabController _tabController;
   String profilePicUrl = '';
+  UserModel? user;
 
   @override
   void initState() {
@@ -149,31 +152,59 @@ class _ProfileNewState extends State<ProfileNew>
       forceElevated: false,
       expandedHeight: 200,
       elevation: 0,
+      //pinned: true,
       stretch: true,
       iconTheme: const IconThemeData(color: Colors.white),
-      backgroundColor: Colors.transparent,
-      actions: [
-        PopupMenuButton<Choice>(
-          onSelected: (d) {
-            if (d.title == "Share") {
-              //shareProfile(context);
-            } else if (d.title == "QR code") {
-              //Navigator.push(context,ScanScreen.getRoute(authState.profileUserModel));
-            }
-          },
-          itemBuilder: (BuildContext context) {
-            return choices.map((Choice choice) {
-              return PopupMenuItem<Choice>(
-                value: choice,
-                child: Text(
-                  choice.title,
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: choice.isEnable ? AppColors.blue : Colors.grey),
-                ),
-              );
-            }).toList();
-          },
-        ),
+      // leading: Column(
+      //   children: [
+      //     const SizedBox(height: 15,),
+      //     Row(
+      //       children: [
+      //         const SizedBox(width: 10),
+      //         InkWell(
+      //           onTap: (){
+      //             Navigator.pop(context);
+      //           },
+      //           child: Container(
+      //             width: 40,
+      //             height: 40,
+      //             decoration: BoxDecoration(
+      //               borderRadius: BorderRadius.circular(30),
+      //               color: Colors.black.withAlpha(20),
+      //             ),
+      //             child: const Icon(
+      //               Icons.arrow_back,
+      //               color: Colors.white,
+      //             ),
+      //           ),
+      //         ),
+      //       ],
+      //     ),
+      //   ],
+      // ),
+      backgroundColor: Colors.white,
+      actions: const [
+        // PopupMenuButton<Choice>(
+        //   onSelected: (d) {
+        //     if (d.title == "Share") {
+        //       //shareProfile(context);
+        //     } else if (d.title == "QR code") {
+        //       //Navigator.push(context,ScanScreen.getRoute(authState.profileUserModel));
+        //     }
+        //   },
+        //   itemBuilder: (BuildContext context) {
+        //     return choices.map((Choice choice) {
+        //       return PopupMenuItem<Choice>(
+        //         value: choice,
+        //         child: Text(
+        //           choice.title,
+        //           style: Theme.of(context).textTheme.titleMedium!.copyWith(
+        //               color: choice.isEnable ? AppColors.blue : Colors.grey),
+        //         ),
+        //       );
+        //     }).toList();
+        //   },
+        // ),
       ],
       flexibleSpace: FlexibleSpaceBar(
         stretchModes: const <StretchMode>[
@@ -197,27 +228,10 @@ class _ProfileNewState extends State<ProfileNew>
                 onTap: () {
                   //pickImage(context, false);
                 },
-                child: BlocConsumer<UserImageCubit, UserImageState>(
-                  listener: (context, state) {},
-                  builder: (context, state) {
-                    if (state is UserImageBannerData) {
-                      var url = state.url;
-                      return CacheImage(
-                        path: url,
-                        fit: BoxFit.fill,
-                      );
-                    }
-                    if (state is UserImageBannerLoading) {
-                      return const CircularProgressIndicator(
-                        color: AppColors.blue,
-                      );
-                    }
-                    return CacheImage(
-                      path: model.bannerImage ??
-                          'https://pbs.twimg.com/profile_banners/457684585/1510495215/1500x500',
-                      fit: BoxFit.fill,
-                    );
-                  },
+                child: CacheImage(
+                  path: model.bannerImage ??
+                      'https://pbs.twimg.com/profile_banners/457684585/1510495215/1500x500',
+                  fit: BoxFit.fitWidth,
                 ),
               ),
             ),
@@ -243,27 +257,9 @@ class _ProfileNewState extends State<ProfileNew>
                       onPressed: () {
                         //pickImage(context, true);
                       },
-                      child: BlocBuilder<UserImageCubit, UserImageState>(
-                        builder: (context, state) {
-                          if (state is UserImageData) {
-                            var url = state.url;
-                            return CircularImage(
-                              path: url,
-                              height: 80,
-                            );
-                          }
-                          if (state is UserImageLoading) {
-                            return const Center(
-                              child: CircularProgressIndicator(
-                                color: AppColors.blue,
-                              ),
-                            );
-                          }
-                          return CircularImage(
-                            path: model.profileImage,
-                            height: 80,
-                          );
-                        },
+                      child: CircularImage(
+                        path: model.profileImage,
+                        height: 80,
                       ),
                     ),
                   ),
@@ -307,9 +303,15 @@ class _ProfileNewState extends State<ProfileNew>
                           splashColor: AppColors.blue.withAlpha(100),
                           borderRadius:
                               const BorderRadius.all(Radius.circular(60)),
-                          onPressed: () {
+                          onPressed: () async {
                             if (isMyProfile) {
-                              Navigator.pushNamed(context, '/editProfile');
+                              var result = await Navigator.pushNamed(
+                                  context, '/editProfile',
+                                  arguments: user);
+                              if (!mounted) return;
+                              if (result != null) {
+                                fetchData();
+                              }
                             } else {}
                           },
                           child: Container(
@@ -372,19 +374,18 @@ class _ProfileNewState extends State<ProfileNew>
     return false;
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: Colors.white,
+        backgroundColor:  Colors.white,
         body: BlocBuilder<UserProfileCubit, UserProfileState>(
           builder: (context, state) {
             if (state is UserProfileData) {
               UserModel data = state.data;
+              user = data;
               isMyProfile = data.uid == FirebaseAuth.instance.currentUser!.uid;
               return NestedScrollView(
                 headerSliverBuilder:
@@ -546,7 +547,7 @@ class UserNameRowWidget extends StatelessWidget {
           child: Row(
             children: <Widget>[
               Text(
-                user.name,
+                user.name!,
                 style: const TextStyle(
                   color: Colors.black,
                   fontSize: 16,
@@ -578,9 +579,7 @@ class UserNameRowWidget extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           child: Row(
             children: [
-              customText(
-                getBio('Android Developer'),
-              ),
+              customText(getBio(user.bio!), style: textTheme.titleMedium),
             ],
           ),
         ),
@@ -588,33 +587,38 @@ class UserNameRowWidget extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           child: Row(
             children: [
-              const Icon(
-                Icons.indeterminate_check_box_outlined,
-                color: Colors.black54,
-                size: 18,
-              ),
-              Container(
-                margin: const EdgeInsets.only(left: 5),
-                child: const Text(
-                  'Mobile Application',
-                  style: TextStyle(fontSize: 16, color: Colors.black54),
-                ),
-              ),
+              // const Icon(
+              //   Icons.indeterminate_check_box_outlined,
+              //   color: Colors.black54,
+              //   size: 18,
+              // ),
+              // Container(
+              //   margin: const EdgeInsets.only(left: 5),
+              //   child: const Text(
+              //     'Mobile Application',
+              //     style: TextStyle(fontSize: 16, color: Colors.black54),
+              //   ),
+              // ),
               const SizedBox(
-                width: 10,
+                width: 0,
               ),
-              const Icon(
-                Icons.location_on_outlined,
-                color: Colors.black54,
-                size: 18,
-              ),
-              Container(
-                margin: const EdgeInsets.only(left: 5),
-                child: const Text(
-                  'Valsad',
-                  style: TextStyle(fontSize: 16, color: Colors.black54),
-                ),
-              ),
+              user.location!.isNotEmpty
+                  ? const Icon(
+                      Icons.location_on_outlined,
+                      color: Colors.black54,
+                      size: 18,
+                    )
+                  : const SizedBox.shrink(),
+              user.location!.isNotEmpty
+                  ? Container(
+                      margin: const EdgeInsets.only(left: 5),
+                      child: Text(
+                        user.location!,
+                        style: const TextStyle(
+                            fontSize: 14, color: Colors.black54),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
             ],
           ),
         ),
@@ -629,29 +633,35 @@ class UserNameRowWidget extends StatelessWidget {
               ),
               Container(
                 margin: const EdgeInsets.only(left: 5),
-                child: const UrlText(
-                  text: 'poorankharol.com',
-                  style: TextStyle(
+                child: Linkify(
+                  onOpen: (link) async {
+                    await Utility.launchURL(link.url);
+                  },
+                  linkStyle: const TextStyle(decoration: TextDecoration.none),
+                  text: user.website!,
+                  style: const TextStyle(
                     color: Colors.blueAccent,
-                    fontSize: 16,
+                    fontSize: 14,
                   ),
+                  options:
+                      const LinkifyOptions(removeWww: true, humanize: true),
                 ),
               ),
-              const SizedBox(
-                width: 10,
-              ),
-              const Icon(
-                Icons.calendar_month_rounded,
-                color: Colors.black54,
-                size: 18,
-              ),
-              Container(
-                margin: const EdgeInsets.only(left: 5),
-                child: const Text(
-                  'Joined December ',
-                  style: TextStyle(fontSize: 16, color: Colors.black54),
-                ),
-              ),
+              // const SizedBox(
+              //   width: 10,
+              // ),
+              // const Icon(
+              //   Icons.calendar_month_rounded,
+              //   color: Colors.black54,
+              //   size: 18,
+              // ),
+              // Container(
+              //   margin: const EdgeInsets.only(left: 5),
+              //   child: const Text(
+              //     'Joined December ',
+              //     style: TextStyle(fontSize: 16, color: Colors.black54),
+              //   ),
+              // ),
             ],
           ),
         ),
