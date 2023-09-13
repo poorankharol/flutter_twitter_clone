@@ -19,7 +19,7 @@ import '../../../core/widget/circular_image.dart';
 import '../../../core/widget/customWidgets.dart';
 import '../../../core/widget/emptyList.dart';
 import '../../../core/widget/url_text/customUrlText.dart';
-import '../cubit/user_profile_cubit.dart';
+import '../cubit/profile/user_profile_cubit.dart';
 
 class ProfileNew extends StatefulWidget {
   const ProfileNew({super.key});

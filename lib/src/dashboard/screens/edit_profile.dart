@@ -10,7 +10,7 @@ import '../../../core/constants/appcolors.dart';
 import '../../../core/model/user.dart';
 import '../../../core/widget/cache_image.dart';
 import '../cubit/image/user_image_cubit.dart';
-import '../cubit/user_profile_cubit.dart';
+import '../cubit/profile/user_profile_cubit.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
