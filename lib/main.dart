@@ -65,7 +65,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Twitter Clone',
         theme: AppTheme.lightTheme,
-        home: const Splash(),
+        home: FirebaseAuth.instance.currentUser == null ?  const Splash() : const Dashboard(),
         initialRoute:
             FirebaseAuth.instance.currentUser == null ? "/" : "/dashboard",
         routes: {
