@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_twitter_clone/src/register/cubit/register_user_cubit.dart';
 
-import '../../core/auth/auth.dart';
+import '../../core/api/auth.dart';
 import '../../core/constants/appcolors.dart';
 
 class Register extends StatefulWidget {

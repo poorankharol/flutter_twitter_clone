@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../core/auth/auth.dart';
-import '../../../core/auth/auth_registration_listener.dart';
+import '../../../core/api/auth.dart';
+import '../../../core/api/auth_registration_listener.dart';
 
 enum RegisterUserState { success, user_exists, weak_password, failed, initial }
 

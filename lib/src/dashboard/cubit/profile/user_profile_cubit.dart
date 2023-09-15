@@ -16,8 +16,8 @@ class UserProfileCubit extends Cubit<UserProfileState> {
   Future<void> fetchData(String uid) async {
     SharedPref sharedPref = SharedPref();
     emit(UserProfileLoading());
-    _userService.getUserDataByUid(uid).then((value) {
-      _userService.getPostByUser(uid: uid).listen((event) {
+    _userService.getUserInfo(uid).then((value) {
+      _userService.getUserTweets(uid: uid).listen((event) {
         value.tweets = event;
         sharedPref.save("user", value);
         emit(UserProfileData(value));

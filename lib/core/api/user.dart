@@ -9,7 +9,7 @@ import '../../src/home/model/post_model.dart';
 import '../model/user.dart';
 
 class UserService {
-  Future<UserModel> getUserDataByUid(String uid) async {
+  Future<UserModel> getUserInfo(String uid) async {
     final data = FirebaseFirestore.instance.collection("users").doc(uid).get();
     var document = await data.whenComplete(() => null);
     return UserModel(
@@ -22,6 +22,7 @@ class UserService {
       location: document['location'] ?? '',
       website: document['website'] ?? '',
       dob: document['dob'] ?? '',
+      username: document['username'] ?? '',
     );
   }
 
@@ -36,7 +37,7 @@ class UserService {
     }).toList();
   }
 
-  Stream<List<PostModel>> getPostByUser({required String uid}) {
+  Stream<List<PostModel>> getUserTweets({required String uid}) {
     return FirebaseFirestore.instance
         .collection("posts")
         .where('creator', isEqualTo: uid)
@@ -108,5 +109,19 @@ class UserService {
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .update(userModel.toFireStoreMap());
+  }
+
+  List<UserModel> _userListFromSnapshot(QuerySnapshot querySnapshot) {
+    return querySnapshot.docs.map((doc) {
+      Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
+      return UserModel.fromJson(data);
+    }).toList();
+  }
+
+  Stream<List<UserModel>> searchUser() {
+    return FirebaseFirestore.instance
+        .collection("users")
+        .snapshots()
+        .map(_userListFromSnapshot);
   }
 }

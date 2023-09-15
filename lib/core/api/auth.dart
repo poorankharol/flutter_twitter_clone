@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_twitter_clone/core/api/auth_registration_listener.dart';
-
+import 'package:username_generator/username_generator.dart';
 class AuthService {
   FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -47,7 +47,8 @@ class AuthService {
         email: email,
         password: password,
       );
-
+      var generator = UsernameGenerator();
+      generator.separator  = '_'; // optional
       await FirebaseFirestore.instance
           .collection('users')
           .doc(userCredential.user?.uid)
@@ -62,6 +63,7 @@ class AuthService {
           'location': '',
           'website': '',
           'dob': '',
+          'username' : generator.generate(name)
         },
       );
 

@@ -10,6 +10,7 @@ class UserModel {
   final String? location;
   final String? website;
   final String? dob;
+  final String? username;
   List<PostModel>? tweets;
 
   UserModel({
@@ -23,6 +24,7 @@ class UserModel {
     this.location,
     this.website,
     this.dob,
+    this.username
   });
 
   UserModel.fromJson(Map<String, dynamic> json)
@@ -34,7 +36,8 @@ class UserModel {
         bio = json['bio'],
         location = json['location'],
         website = json['website'],
-        dob = json['dob'];
+        dob = json['dob'],
+        username = json['username'];
 
   Map<String, dynamic> toJson() {
     return {
@@ -43,11 +46,11 @@ class UserModel {
       'email': email,
       'profileImage': profileImage,
       'bannerImage': bannerImage,
-      //'tweets': tweets,
       'bio': bio,
       'location': location,
       'website': website,
       'dob': dob,
+      'username': username,
     };
   }
 

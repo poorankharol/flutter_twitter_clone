@@ -81,7 +81,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   ),
                 ),
                 Text(
-                  '@pooranpkharol',
+                  "@${userLoad!.username}",
                   style: textTheme.titleMedium!.copyWith(
                     color: Colors.grey,
                     fontSize: 14,
@@ -143,7 +143,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             ),
             title: const Text('Profile'),
             onTap: () {
-              Navigator.pushNamed(context, "/profile");
+              Navigator.pushNamed(context, "/profile",arguments: userLoad);
             },
           ),
           ListTile(
