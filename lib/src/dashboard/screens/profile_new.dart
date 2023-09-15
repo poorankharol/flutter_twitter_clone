@@ -14,6 +14,7 @@ import '../../../core/widget/cache_image.dart';
 import '../../../core/widget/circular_image.dart';
 import '../../../core/widget/customWidgets.dart';
 import '../../../core/widget/emptyList.dart';
+import '../cubit/following/follow_un_follow_cubit.dart';
 import '../cubit/profile/user_profile_cubit.dart';
 
 class ProfileNew extends StatefulWidget {
@@ -27,7 +28,8 @@ class ProfileNew extends StatefulWidget {
 
 class _ProfileNewState extends State<ProfileNew>
     with SingleTickerProviderStateMixin {
-  bool isMyProfile = true;
+  bool isMyProfile = false;
+  bool isFollowing = false;
   int pageIndex = 0;
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   late TabController _tabController;
@@ -47,6 +49,8 @@ class _ProfileNewState extends State<ProfileNew>
   void fetchData() {
     final cubit = context.read<UserProfileCubit>();
     cubit.fetchData(widget.uid);
+    final following = context.read<FollowUnFollowCubit>();
+    following.isFollowing(FirebaseAuth.instance.currentUser!.uid, widget.uid);
   }
 
   @override
@@ -279,43 +283,95 @@ class _ProfileNewState extends State<ProfileNew>
                                 fetchData();
                               }
                             } else {
-
+                              var follow = context.read<FollowUnFollowCubit>();
+                              if (isFollowing) {
+                                follow.unFollowUser(user!.uid!);
+                              } else {
+                                follow.followUser(user!.uid!);
+                              }
+                              setState(() {
+                                isFollowing = !isFollowing;
+                              });
                             }
                           },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 5,
-                            ),
-                            decoration: BoxDecoration(
-                              color: isMyProfile
-                                  ? AppColors.white
-                                  : isFollower()
+                          child:
+                              BlocBuilder<FollowUnFollowCubit, FollowUnFollowState>(
+                            builder: (context, state) {
+                              if (state is IsFollowingUserData) {
+                                isFollowing = state.isFollowing;
+                                print("Issssssss$isFollowing");
+                                return Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 5,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: isMyProfile
+                                        ? AppColors.white
+                                        : isFollowing
+                                        ? AppColors.blue
+                                        : AppColors.white,
+                                    border: Border.all(
+                                        color: isMyProfile
+                                            ? Colors.black87.withAlpha(180)
+                                            : Colors.blue,
+                                        width: 1),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Text(
+                                    isMyProfile
+                                        ? 'Edit Profile'
+                                        : isFollowing
+                                        ? 'Following'
+                                        : 'Follow',
+                                    style: TextStyle(
+                                      color: isMyProfile
+                                          ? Colors.black87.withAlpha(180)
+                                          : isFollowing
+                                          ? AppColors.white
+                                          : Colors.blue,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                );
+                              }
+                              return Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 5,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: isMyProfile
+                                      ? AppColors.white
+                                      : isFollowing
                                       ? AppColors.blue
                                       : AppColors.white,
-                              border: Border.all(
-                                  color: isMyProfile
-                                      ? Colors.black87.withAlpha(180)
-                                      : Colors.blue,
-                                  width: 1),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              isMyProfile
-                                  ? 'Edit Profile'
-                                  : isFollower()
+                                  border: Border.all(
+                                      color: isMyProfile
+                                          ? Colors.black87.withAlpha(180)
+                                          : Colors.blue,
+                                      width: 1),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(
+                                  isMyProfile
+                                      ? 'Edit Profile'
+                                      : isFollowing
                                       ? 'Following'
                                       : 'Follow',
-                              style: TextStyle(
-                                color: isMyProfile
-                                    ? Colors.black87.withAlpha(180)
-                                    : isFollower()
+                                  style: TextStyle(
+                                    color: isMyProfile
+                                        ? Colors.black87.withAlpha(180)
+                                        : isFollowing
                                         ? AppColors.white
                                         : Colors.blue,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         )
                       ],
@@ -331,14 +387,6 @@ class _ProfileNewState extends State<ProfileNew>
   }
 
   bool isFollower() {
-    // var authState = Provider.of<ProfileState>(context, listen: false);
-    // if (authState.profileUserModel.followersList != null &&
-    //     authState.profileUserModel.followersList!.isNotEmpty) {
-    //   return (authState.profileUserModel.followersList!
-    //       .any((x) => x == authState.userId));
-    // } else {
-    //   return false;
-    // }
     return false;
   }
 

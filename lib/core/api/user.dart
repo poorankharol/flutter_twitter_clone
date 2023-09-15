@@ -9,6 +9,7 @@ import '../../src/home/model/post_model.dart';
 import '../model/user.dart';
 
 class UserService {
+  /*Get User Info*/
   Future<UserModel> getUserInfo(String uid) async {
     final data = FirebaseFirestore.instance.collection("users").doc(uid).get();
     var document = await data.whenComplete(() => null);
@@ -26,6 +27,7 @@ class UserService {
     );
   }
 
+  /*Get User Tweets*/
   List<PostModel> _postListFromSnapshot(QuerySnapshot querySnapshot) {
     return querySnapshot.docs.map((doc) {
       Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
@@ -45,6 +47,7 @@ class UserService {
         .map(_postListFromSnapshot);
   }
 
+  /*Get Profile Pic*/
   Future<String> getProfilePicture({
     required String uid,
   }) async {
@@ -55,6 +58,7 @@ class UserService {
     return profileImg;
   }
 
+  /*Update Profile Pic*/
   Future<String> updateProfilePicture({
     required File? profileImage,
   }) async {
@@ -75,6 +79,7 @@ class UserService {
     return profileImg;
   }
 
+  /*Update Banner*/
   Future<String> updateBanner({
     required File? bannerImage,
   }) async {
@@ -93,6 +98,7 @@ class UserService {
     return bannerImg;
   }
 
+  /*Upload File*/
   Future<String> uploadFile(File img, String path) async {
     // Create a storage reference from our app
     final storageRef = FirebaseStorage.instance.ref(path);
@@ -104,6 +110,7 @@ class UserService {
     return downloadUrl;
   }
 
+  /*Update Profile*/
   Future<void> updateProfile(UserModel userModel) async {
     await FirebaseFirestore.instance
         .collection('users')
@@ -111,6 +118,7 @@ class UserService {
         .update(userModel.toFireStoreMap());
   }
 
+  /*Search User*/
   List<UserModel> _userListFromSnapshot(QuerySnapshot querySnapshot) {
     return querySnapshot.docs.map((doc) {
       Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
@@ -123,5 +131,53 @@ class UserService {
         .collection("users")
         .snapshots()
         .map(_userListFromSnapshot);
+  }
+
+  /*Is Following*/
+
+  Stream<bool> isFollowing(String uid, String otherUid) {
+    return FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .collection("following")
+        .doc(otherUid)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.exists;
+    },);
+  }
+
+  Future<void> followUser(String uid) async {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("following")
+        .doc(uid)
+        .set({ });
+
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .collection("followers")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .set({ });
+
+  }
+
+  Future<void> unFollowUser(String uid) async {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("following")
+        .doc(uid)
+        .delete();
+
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .collection("followers")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .delete();
+
   }
 }

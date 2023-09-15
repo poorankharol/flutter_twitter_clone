@@ -7,6 +7,7 @@ import 'package:flutter_twitter_clone/core/constants/apptheme.dart';
 import 'package:flutter_twitter_clone/core/model/user.dart';
 import 'package:flutter_twitter_clone/src/add/cubit/add_post_cubit.dart';
 import 'package:flutter_twitter_clone/src/add/new_tweet.dart';
+import 'package:flutter_twitter_clone/src/dashboard/cubit/following/follow_un_follow_cubit.dart';
 import 'package:flutter_twitter_clone/src/dashboard/cubit/image/user_image_cubit.dart';
 import 'package:flutter_twitter_clone/src/dashboard/cubit/profile/user_profile_cubit.dart';
 import 'package:flutter_twitter_clone/src/dashboard/screens/dashboard.dart';
@@ -55,6 +56,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<UserSearchCubit>(
           create: (_) => UserSearchCubit(UserService()),
+        ),
+        BlocProvider<FollowUnFollowCubit>(
+          create: (_) => FollowUnFollowCubit(UserService()),
         ),
       ],
       child: MaterialApp(

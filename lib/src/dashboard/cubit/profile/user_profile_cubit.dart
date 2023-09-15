@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_twitter_clone/core/api/user.dart';
 import 'package:flutter_twitter_clone/core/model/user.dart';
@@ -19,7 +20,9 @@ class UserProfileCubit extends Cubit<UserProfileState> {
     _userService.getUserInfo(uid).then((value) {
       _userService.getUserTweets(uid: uid).listen((event) {
         value.tweets = event;
-        sharedPref.save("user", value);
+        if (FirebaseAuth.instance.currentUser!.uid == value.uid) {
+          sharedPref.save("user", value);
+        }
         emit(UserProfileData(value));
       });
     });

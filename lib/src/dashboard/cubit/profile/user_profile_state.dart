@@ -23,3 +23,6 @@ class UserProfileData extends UserProfileState {
 class UpdateUserProfileLoading extends UserProfileState {}
 
 class UpdateUserProfileData extends UserProfileState {}
+
+
+
