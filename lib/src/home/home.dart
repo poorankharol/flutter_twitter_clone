@@ -5,6 +5,7 @@ import 'package:flutter_twitter_clone/core/constants/appcolors.dart';
 class Home extends StatelessWidget {
   const Home({super.key});
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

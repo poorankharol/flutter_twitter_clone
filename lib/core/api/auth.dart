@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_twitter_clone/core/auth/auth_registration_listener.dart';
+import 'package:flutter_twitter_clone/core/api/auth_registration_listener.dart';
 
 class AuthService {
   FirebaseAuth auth = FirebaseAuth.instance;

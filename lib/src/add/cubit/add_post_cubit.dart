@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_twitter_clone/core/auth/posts.dart';
+import 'package:flutter_twitter_clone/core/api/posts.dart';
 
-import '../../../core/auth/post_listener.dart';
+import '../../../core/api/post_listener.dart';
 
 enum PostState { success, failed, initial }
 

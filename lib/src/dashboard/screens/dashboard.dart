@@ -24,20 +24,37 @@ class _DashboardState extends State<Dashboard> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   SharedPref sharedPref = SharedPref();
   int _selectedIndex = 0; //New
+  bool hasSearchBarFocus = false;
   var bottomWidgets = [
     const Home(),
     const Search(),
     const NotificationScreen(),
     const DirectMessage(),
   ];
+  final FocusNode _focus = FocusNode();
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       fetchData();
     });
+    _focus.addListener(_onFocusChange);
     super.initState();
   }
+  @override
+  void dispose() {
+    super.dispose();
+    _focus.removeListener(_onFocusChange);
+    _focus.dispose();
+  }
+
+  void _onFocusChange() {
+    setState(() {
+      hasSearchBarFocus = _focus.hasFocus;
+    });
+    print("Focus: ${_focus.hasFocus.toString()}");
+  }
+
 
   void fetchData() {
     final cubit = context.read<UserProfileCubit>();
@@ -138,6 +155,13 @@ class _DashboardState extends State<Dashboard> {
             child: SizedBox(
               height: 38,
               child: TextField(
+                onTap: (){
+                    Navigator.pushNamed(context, "/search");
+                },
+                //cursorHeight: 20,
+                //focusNode: _focus,
+                readOnly: true,
+                //cursorColor: Colors.black,
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.grey.withAlpha(50),
@@ -182,10 +206,10 @@ class _DashboardState extends State<Dashboard> {
         return Scaffold(
           key: scaffoldKey,
           appBar: _appBar(state),
-          body: bottomWidgets.elementAt(_selectedIndex),
+          body : bottomWidgets.elementAt(_selectedIndex),
           drawer: const DrawerWidget(),
           bottomNavigationBar: BottomNavigationBar(
-            selectedItemColor: AppColors.blue,
+            selectedItemColor: Colors.black,
             unselectedItemColor: Colors.grey,
             showSelectedLabels: false,
             showUnselectedLabels: false,
@@ -195,13 +219,13 @@ class _DashboardState extends State<Dashboard> {
             onTap: _onItemTapped,
             items: const [
               BottomNavigationBarItem(
-                  icon: Icon(Icons.home_outlined), label: ""),
+                  icon: Icon(Icons.home_outlined,size: 30,), label: ""),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.search_outlined), label: ""),
+                  icon: Icon(Icons.search_outlined,size: 30), label: ""),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.notifications_outlined), label: ""),
+                  icon: Icon(Icons.notifications_outlined,size: 30), label: ""),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.email_outlined), label: ""),
+                  icon: Icon(Icons.email_outlined,size: 30), label: ""),
             ],
           ),
         );

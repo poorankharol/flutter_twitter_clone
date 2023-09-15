@@ -50,21 +50,21 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CircleAvatar(
-                  radius: 25,
+                  radius: 20,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(30),
                     child: userLoad != null
                         ? CachedNetworkImage(
-                            width: 50,
-                            height: 50,
+                            width: 40,
+                            height: 40,
                             fit: BoxFit.cover,
                             imageUrl: userLoad!.profileImage!.isEmpty
                                 ? 'https://firebasestorage.googleapis.com/v0/b/twitter-clone-43c3e.appspot.com/o/placeholder%2Fuser.png?alt=media&token=9c85ab40-b21f-4b95-b661-19f03ebd5b26'
                                 : userLoad!.profileImage!,
                           )
                         : CachedNetworkImage(
-                            width: 50,
-                            height: 50,
+                            width: 40,
+                            height: 40,
                             fit: BoxFit.cover,
                             imageUrl:
                                 'https://firebasestorage.googleapis.com/v0/b/twitter-clone-43c3e.appspot.com/o/placeholder%2Fuser.png?alt=media&token=9c85ab40-b21f-4b95-b661-19f03ebd5b26',
@@ -88,49 +88,52 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   ),
                 ),
                 const SizedBox(
-                  height: 10,
+                  height: 5,
                 ),
-                Row(
-                  children: [
-                    Text(
-                      '1',
-                      style: textTheme.titleMedium!.copyWith(
-                          color: Colors.black,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Text(
-                      'Followers',
-                      style: textTheme.titleMedium!.copyWith(
-                        color: Colors.grey,
-                        fontSize: 14,
+                Expanded(
+                  child: Row(
+                    children: [
+                      Text(
+                        '1',
+                        style: textTheme.titleMedium!.copyWith(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold),
                       ),
-                    ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    Text(
-                      '1',
-                      style: textTheme.titleMedium!.copyWith(
-                          color: Colors.black,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Text(
-                      'Following',
-                      style: textTheme.titleMedium!.copyWith(
-                        color: Colors.grey,
-                        fontSize: 14,
+                      const SizedBox(
+                        width: 5,
                       ),
-                    ),
-                  ],
-                )
+                      Text(
+                        'Followers',
+                        style: textTheme.titleMedium!.copyWith(
+                          color: Colors.grey,
+                          fontSize: 14,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 15,
+                      ),
+                      Text(
+                        '1',
+                        style: textTheme.titleMedium!.copyWith(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        'Following',
+                        style: textTheme.titleMedium!.copyWith(
+                          color: Colors.grey,
+                          fontSize: 14,
+                        ),
+                      ),
+
+                    ],
+                  ),
+                ),
               ],
             ),
           ),

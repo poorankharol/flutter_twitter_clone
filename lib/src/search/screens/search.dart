@@ -19,7 +19,7 @@ class _SearchState extends State<Search> with SingleTickerProviderStateMixin{
   }
 
   Widget textWidget(String text){
-    return Center(child: Text(text,style: TextStyle(fontSize: 24),));
+    return Center(child: Text(text,style: const TextStyle(fontSize: 20),));
   }
 
   @override

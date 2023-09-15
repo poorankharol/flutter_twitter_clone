@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_twitter_clone/core/auth/user.dart';
+import 'package:flutter_twitter_clone/core/api/user.dart';
 import 'package:flutter_twitter_clone/core/model/user.dart';
 import 'package:meta/meta.dart';
 

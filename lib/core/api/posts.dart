@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_twitter_clone/core/auth/post_listener.dart';
+import 'package:flutter_twitter_clone/core/api/post_listener.dart';
 import 'package:flutter_twitter_clone/src/home/model/post_model.dart';
 
 class PostService {
