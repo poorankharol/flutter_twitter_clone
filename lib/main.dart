@@ -13,8 +13,9 @@ import 'package:flutter_twitter_clone/src/dashboard/cubit/profile/user_profile_c
 import 'package:flutter_twitter_clone/src/dashboard/screens/dashboard.dart';
 import 'package:flutter_twitter_clone/src/dashboard/screens/edit_profile.dart';
 import 'package:flutter_twitter_clone/src/dashboard/screens/profile_new.dart';
-import 'package:flutter_twitter_clone/src/home/cubit/feeds_cubit.dart';
-import 'package:flutter_twitter_clone/src/home/cubit/feeds_user_cubit.dart';
+import 'package:flutter_twitter_clone/src/home/cubit/feeds/feeds_cubit.dart';
+import 'package:flutter_twitter_clone/src/home/cubit/feeds/feeds_user_cubit.dart';
+import 'package:flutter_twitter_clone/src/home/cubit/like/like_cubit.dart';
 import 'package:flutter_twitter_clone/src/login/cubit/login_user_cubit.dart';
 import 'package:flutter_twitter_clone/src/login/login.dart';
 import 'package:flutter_twitter_clone/src/register/cubit/register_user_cubit.dart';
@@ -68,6 +69,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<FeedsUserCubit>(
           create: (_) => FeedsUserCubit(UserService()),
+        ),
+        BlocProvider<LikeCubit>(
+          create: (_) => LikeCubit(PostService()),
         ),
       ],
       child: MaterialApp(

@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter_twitter_clone/core/model/user.dart';
 import 'package:meta/meta.dart';
 
-import '../../../core/api/user.dart';
+import '../../../../core/api/user.dart';
 
 part 'feeds_user_state.dart';
 

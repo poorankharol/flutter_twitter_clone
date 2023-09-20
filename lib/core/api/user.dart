@@ -45,7 +45,8 @@ class UserService {
           id: doc.id,
           creator: data['creator'] ?? '',
           message: data['text'] ?? '',
-          timestamp: data['timeStamp'] ?? 0);
+          timestamp: data['timeStamp'] ?? 0,
+          isLiked: false);
     }).toList();
   }
 

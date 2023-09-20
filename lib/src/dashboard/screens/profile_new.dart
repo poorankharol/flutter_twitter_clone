@@ -699,7 +699,7 @@ class UserNameRowWidget extends StatelessWidget {
               const SizedBox(
                 width: 10,
               ),
-              _textButton(context, "1", ' Followers', () {
+              _textButton(context, "0", ' Followers', () {
                 // var state = context.read<ProfileState>();
                 // Navigator.push(
                 //   context,
@@ -710,7 +710,7 @@ class UserNameRowWidget extends StatelessWidget {
                 // );
               }),
               const SizedBox(width: 20),
-              _textButton(context, "1", ' Following', () {
+              _textButton(context, "0", ' Following', () {
                 // var state = context.read<ProfileState>();
                 // Navigator.push(
                 //   context,

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_twitter_clone/src/home/cubit/like/like_cubit.dart';
 import 'package:flutter_twitter_clone/src/home/model/post_model.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/widget/circular_image.dart';
-import '../../home/cubit/feeds_cubit.dart';
-import '../../home/cubit/feeds_user_cubit.dart';
+import '../../home/cubit/feeds/feeds_user_cubit.dart';
 
 class TweetItem extends StatefulWidget {
   const TweetItem({super.key, required this.model});
@@ -172,11 +172,11 @@ class _TweetItemState extends State<TweetItem> {
                     const SizedBox(
                       height: 15,
                     ),
-                    const Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Row(
+                        const Row(
                           children: [
                             Icon(
                               Icons.mode_comment_outlined,
@@ -189,7 +189,7 @@ class _TweetItemState extends State<TweetItem> {
                             Text(""),
                           ],
                         ),
-                        Row(
+                        const Row(
                           children: [
                             RotatedBox(
                               quarterTurns: 1,
@@ -207,18 +207,29 @@ class _TweetItemState extends State<TweetItem> {
                         ),
                         Row(
                           children: [
-                            Icon(
-                              Icons.favorite_border,
-                              color: Colors.grey,
-                              size: 20,
+                            InkWell(
+                              onTap: () {
+                                final like = context.read<LikeCubit>();
+                                like.likePost(
+                                    widget.model, widget.model.isLiked);
+                              },
+                              child: Icon(
+                                widget.model.isLiked
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                color: widget.model.isLiked
+                                    ? Colors.red
+                                    : Colors.grey,
+                                size: 20,
+                              ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 10,
                             ),
-                            Text(""),
+                            Text("${widget.model.likesCount}"),
                           ],
                         ),
-                        Icon(
+                        const Icon(
                           Icons.share,
                           color: Colors.grey,
                           size: 20,

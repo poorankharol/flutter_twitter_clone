@@ -94,7 +94,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   child: Row(
                     children: [
                       Text(
-                        '1',
+                        '0',
                         style: textTheme.titleMedium!.copyWith(
                             color: Colors.black,
                             fontSize: 14,
@@ -114,7 +114,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                         width: 15,
                       ),
                       Text(
-                        '1',
+                        '0',
                         style: textTheme.titleMedium!.copyWith(
                             color: Colors.black,
                             fontSize: 14,

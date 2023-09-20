@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_twitter_clone/core/constants/appcolors.dart';
 import 'package:flutter_twitter_clone/src/dashboard/widget/tweet_item.dart';
-import 'package:flutter_twitter_clone/src/home/cubit/feeds_cubit.dart';
+import 'package:flutter_twitter_clone/src/home/cubit/feeds/feeds_cubit.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -13,7 +13,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -107,11 +106,17 @@ class _HomeState extends State<Home> {
       body: BlocBuilder<FeedsCubit, FeedsState>(
         builder: (context, state) {
           if (state is FeedsData) {
-            return ListView.builder(
-                itemCount: state.data.length,
-                itemBuilder: (ctx, index) {
-                  return TweetItem(model: state.data[index]);
-                });
+            return ListView.separated(
+              itemCount: state.data.length,
+              itemBuilder: (ctx, index) {
+                return TweetItem(
+                  model: state.data[index],
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return const Divider();
+              },
+            );
           }
           if (state is FeedsLoading) {
             return const Center(
@@ -120,7 +125,7 @@ class _HomeState extends State<Home> {
               ),
             );
           }
-          return const Text('user hasn\'t post any Tweet' );
+          return const Text('user hasn\'t post any Tweet');
         },
       ),
     );

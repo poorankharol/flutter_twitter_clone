@@ -27,7 +27,7 @@ class PostService {
     Iterable<String> userFollowing = await UserService()
         .getUserFollowing(FirebaseAuth.instance.currentUser!.uid);
 
-    var splitUsers = partition<dynamic>(userFollowing!, 10);
+    var splitUsers = partition<dynamic>(userFollowing, 10);
     List<PostModel> feedList = [];
 
     for (int i = 0; i < splitUsers.length; i++) {
@@ -39,7 +39,7 @@ class PostService {
       feedList.addAll(_postListFromSnapshot(querySnapshot));
     }
 
-    feedList.sort((a,b){
+    feedList.sort((a, b) {
       var atimeStamp = a.timestamp;
       var btimeStamp = b.timestamp;
       return btimeStamp.compareTo(atimeStamp);
@@ -53,10 +53,54 @@ class PostService {
     return querySnapshot.docs.map((doc) {
       Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
       return PostModel(
-          id: doc.id,
-          creator: data['creator'] ?? '',
-          message: data['text'] ?? '',
-          timestamp: data['timeStamp'] ?? 0);
+        id: doc.id,
+        creator: data['creator'] ?? '',
+        message: data['text'] ?? '',
+        timestamp: data['timeStamp'] ?? 0,
+        isLiked: false,
+      );
     }).toList();
+  }
+
+  Future likePost(PostModel post, bool current) async {
+    if (current) {
+      await FirebaseFirestore.instance
+          .collection('posts')
+          .doc(post.id)
+          .collection('likes')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .delete();
+    } else {
+      await FirebaseFirestore.instance
+          .collection('posts')
+          .doc(post.id)
+          .collection('likes')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .set({});
+    }
+  }
+
+  Stream<bool> getCurrentUserLike(PostModel post) {
+    return FirebaseFirestore.instance
+        .collection('posts')
+        .doc(post.id)
+        .collection('likes')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .snapshots()
+        .map((event) {
+      return event.exists;
+    });
+  }
+
+  Stream<int> getPostLikeCount(PostModel post) {
+    return FirebaseFirestore.instance
+        .collection('posts')
+        .doc(post.id)
+        .collection('likes')
+        //.doc(FirebaseAuth.instance.currentUser!.uid)
+        .snapshots()
+        .map((event) {
+      return event.size;
+    });
   }
 }
