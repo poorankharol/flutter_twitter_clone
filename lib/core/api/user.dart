@@ -27,6 +27,16 @@ class UserService {
     );
   }
 
+  Future<Iterable<String>> getUserFollowing(uid) async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('following')
+        .get();
+    final users = querySnapshot.docs.map((doc) => doc.id);
+    return users;
+  }
+
   /*Get User Tweets*/
   List<PostModel> _postListFromSnapshot(QuerySnapshot querySnapshot) {
     return querySnapshot.docs.map((doc) {
@@ -142,9 +152,11 @@ class UserService {
         .collection("following")
         .doc(otherUid)
         .snapshots()
-        .map((snapshot) {
-      return snapshot.exists;
-    },);
+        .map(
+      (snapshot) {
+        return snapshot.exists;
+      },
+    );
   }
 
   Future<void> followUser(String uid) async {
@@ -153,15 +165,14 @@ class UserService {
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("following")
         .doc(uid)
-        .set({ });
+        .set({});
 
     await FirebaseFirestore.instance
         .collection("users")
         .doc(uid)
         .collection("followers")
         .doc(FirebaseAuth.instance.currentUser!.uid)
-        .set({ });
-
+        .set({});
   }
 
   Future<void> unFollowUser(String uid) async {
@@ -178,6 +189,5 @@ class UserService {
         .collection("followers")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .delete();
-
   }
 }

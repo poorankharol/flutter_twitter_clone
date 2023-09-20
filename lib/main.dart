@@ -13,6 +13,8 @@ import 'package:flutter_twitter_clone/src/dashboard/cubit/profile/user_profile_c
 import 'package:flutter_twitter_clone/src/dashboard/screens/dashboard.dart';
 import 'package:flutter_twitter_clone/src/dashboard/screens/edit_profile.dart';
 import 'package:flutter_twitter_clone/src/dashboard/screens/profile_new.dart';
+import 'package:flutter_twitter_clone/src/home/cubit/feeds_cubit.dart';
+import 'package:flutter_twitter_clone/src/home/cubit/feeds_user_cubit.dart';
 import 'package:flutter_twitter_clone/src/login/cubit/login_user_cubit.dart';
 import 'package:flutter_twitter_clone/src/login/login.dart';
 import 'package:flutter_twitter_clone/src/register/cubit/register_user_cubit.dart';
@@ -21,6 +23,7 @@ import 'package:flutter_twitter_clone/src/search/cubit/user_search_cubit.dart';
 import 'package:flutter_twitter_clone/src/search/widget/search_widget.dart';
 import 'package:flutter_twitter_clone/src/splash/splash.dart';
 
+import 'core/api/posts.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -60,16 +63,24 @@ class MyApp extends StatelessWidget {
         BlocProvider<FollowUnFollowCubit>(
           create: (_) => FollowUnFollowCubit(UserService()),
         ),
+        BlocProvider<FeedsCubit>(
+          create: (_) => FeedsCubit(PostService()),
+        ),
+        BlocProvider<FeedsUserCubit>(
+          create: (_) => FeedsUserCubit(UserService()),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Twitter Clone',
         theme: AppTheme.lightTheme,
-        home: FirebaseAuth.instance.currentUser == null ?  const Splash() : const Dashboard(),
-        initialRoute:
-            FirebaseAuth.instance.currentUser == null ? "/" : "/dashboard",
+        home: FirebaseAuth.instance.currentUser == null
+            ? const Splash()
+            : const Dashboard(),
+        //initialRoute:  FirebaseAuth.instance.currentUser == null ? "/" : "/dashboard",
         routes: {
           '/login': (context) => const Login(),
+          '/splash': (context) => const Splash(),
           '/register': (context) => const Register(),
           '/dashboard': (context) => const Dashboard(),
           '/newTweet': (context) => const NewTweet(),
@@ -100,7 +111,7 @@ class MyApp extends StatelessWidget {
           // us of that higher up in the call stack, since
           // this assertion would otherwise fire somewhere
           // in the framework.
-          assert(false, 'Need to implement ${settings.name}');
+          //assert(false, 'Need to implement ${settings.name}');
           return null;
         },
       ),

@@ -246,7 +246,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 title: const Text('Logout'),
                 onTap: () async {
                   await FirebaseAuth.instance.signOut().then((value) {
-                    Navigator.pushNamed(context, '/');
+                    Navigator.pushNamed(context, '/splash');
                   });
                 },
               ),

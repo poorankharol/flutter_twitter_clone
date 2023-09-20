@@ -42,6 +42,7 @@ class _DashboardState extends State<Dashboard> {
     _focus.addListener(_onFocusChange);
     super.initState();
   }
+
   @override
   void dispose() {
     super.dispose();
@@ -56,7 +57,6 @@ class _DashboardState extends State<Dashboard> {
     print("Focus: ${_focus.hasFocus.toString()}");
   }
 
-
   void fetchData() {
     final cubit = context.read<UserProfileCubit>();
     cubit.fetchData(FirebaseAuth.instance.currentUser!.uid);
@@ -66,7 +66,6 @@ class _DashboardState extends State<Dashboard> {
     setState(() {
       _selectedIndex = index;
     });
-
   }
 
   AppBar _appBar(UserProfileState state) {
@@ -81,32 +80,30 @@ class _DashboardState extends State<Dashboard> {
 
   AppBar _homeAppBar(UserProfileState state) {
     return AppBar(
-      leading: Container(margin: const EdgeInsets.only(left: 16),
-        child: InkWell(
-          onTap: () {
-            scaffoldKey.currentState!.openDrawer();
-          },
-          child: CircleAvatar(
-            backgroundColor: Colors.white,
-            radius: 20,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(30),
-              child: state is UserProfileData
-                  ? CachedNetworkImage(
-                      width: 30,
-                      height: 30,
-                      fit: BoxFit.cover,
-                      imageUrl: state.data.profileImage!.isEmpty
-                          ? 'https://firebasestorage.googleapis.com/v0/b/twitter-clone-43c3e.appspot.com/o/placeholder%2Fuser.png?alt=media&token=9c85ab40-b21f-4b95-b661-19f03ebd5b26'
-                          : state.data.profileImage!,
-                    )
-                  : CachedNetworkImage(
-                      width: 30,
-                      height: 30,
-                      fit: BoxFit.cover,
-                      imageUrl:
-                          'https://firebasestorage.googleapis.com/v0/b/twitter-clone-43c3e.appspot.com/o/placeholder%2Fuser.png?alt=media&token=9c85ab40-b21f-4b95-b661-19f03ebd5b26'),
-            ),
+      leading: InkWell(
+        onTap: () {
+          scaffoldKey.currentState!.openDrawer();
+        },
+        child: CircleAvatar(
+          backgroundColor: Colors.white,
+          radius: 20,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(30),
+            child: state is UserProfileData
+                ? CachedNetworkImage(
+                    width: 30,
+                    height: 30,
+                    fit: BoxFit.cover,
+                    imageUrl: state.data.profileImage!.isEmpty
+                        ? 'https://firebasestorage.googleapis.com/v0/b/twitter-clone-43c3e.appspot.com/o/placeholder%2Fuser.png?alt=media&token=9c85ab40-b21f-4b95-b661-19f03ebd5b26'
+                        : state.data.profileImage!,
+                  )
+                : CachedNetworkImage(
+                    width: 30,
+                    height: 30,
+                    fit: BoxFit.cover,
+                    imageUrl:
+                        'https://firebasestorage.googleapis.com/v0/b/twitter-clone-43c3e.appspot.com/o/placeholder%2Fuser.png?alt=media&token=9c85ab40-b21f-4b95-b661-19f03ebd5b26'),
           ),
         ),
       ),
@@ -117,48 +114,43 @@ class _DashboardState extends State<Dashboard> {
 
   AppBar _searchAppBar(UserProfileState state) {
     return AppBar(
-      leading: null,
-      automaticallyImplyLeading: false,
+      leading: InkWell(
+        onTap: () {
+          scaffoldKey.currentState!.openDrawer();
+        },
+        child: CircleAvatar(
+          backgroundColor: Colors.white,
+          radius: 20,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(30),
+            child: state is UserProfileData
+                ? CachedNetworkImage(
+              width: 30,
+              height: 30,
+              fit: BoxFit.cover,
+              imageUrl: state.data.profileImage!.isEmpty
+                  ? 'https://firebasestorage.googleapis.com/v0/b/twitter-clone-43c3e.appspot.com/o/placeholder%2Fuser.png?alt=media&token=9c85ab40-b21f-4b95-b661-19f03ebd5b26'
+                  : state.data.profileImage!,
+            )
+                : CachedNetworkImage(
+                width: 30,
+                height: 30,
+                fit: BoxFit.cover,
+                imageUrl:
+                'https://firebasestorage.googleapis.com/v0/b/twitter-clone-43c3e.appspot.com/o/placeholder%2Fuser.png?alt=media&token=9c85ab40-b21f-4b95-b661-19f03ebd5b26'),
+          ),
+        ),
+      ),
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          InkWell(
-            onTap: () {
-              scaffoldKey.currentState!.openDrawer();
-            },
-            child: CircleAvatar(
-              backgroundColor: Colors.white,
-              radius: 20,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(30),
-                child: state is UserProfileData
-                    ? CachedNetworkImage(
-                        width: 30,
-                        height: 30,
-                        fit: BoxFit.cover,
-                        imageUrl: state.data.profileImage!.isEmpty
-                            ? 'https://firebasestorage.googleapis.com/v0/b/twitter-clone-43c3e.appspot.com/o/placeholder%2Fuser.png?alt=media&token=9c85ab40-b21f-4b95-b661-19f03ebd5b26'
-                            : state.data.profileImage!,
-                      )
-                    : CachedNetworkImage(
-                        width: 30,
-                        height: 30,
-                        fit: BoxFit.cover,
-                        imageUrl:
-                            'https://firebasestorage.googleapis.com/v0/b/twitter-clone-43c3e.appspot.com/o/placeholder%2Fuser.png?alt=media&token=9c85ab40-b21f-4b95-b661-19f03ebd5b26'),
-              ),
-            ),
-          ),
-          const SizedBox(
-            width: 10,
-          ),
           Expanded(
             child: SizedBox(
               height: 38,
               child: TextField(
-                onTap: (){
-                    Navigator.pushNamed(context, "/search");
+                onTap: () {
+                  Navigator.pushNamed(context, "/search");
                 },
                 //cursorHeight: 20,
                 //focusNode: _focus,
@@ -184,12 +176,12 @@ class _DashboardState extends State<Dashboard> {
                 style: const TextStyle(
                   fontSize: 16,
                   color: Colors.black,
-                ),// InputDecoration
+                ), // InputDecoration
               ),
             ), // TextField
           ),
           const SizedBox(
-            width: 10,
+            width: 15,
           ),
           const Icon(
             Icons.settings,
@@ -208,7 +200,7 @@ class _DashboardState extends State<Dashboard> {
         return Scaffold(
           key: scaffoldKey,
           appBar: _appBar(state),
-          body : bottomWidgets.elementAt(_selectedIndex),
+          body: bottomWidgets.elementAt(_selectedIndex),
           drawer: const DrawerWidget(),
           bottomNavigationBar: BottomNavigationBar(
             selectedItemColor: Colors.black,
@@ -221,13 +213,18 @@ class _DashboardState extends State<Dashboard> {
             onTap: _onItemTapped,
             items: const [
               BottomNavigationBarItem(
-                  icon: Icon(Icons.home_outlined,size: 30,), label: ""),
+                  icon: Icon(
+                    Icons.home_outlined,
+                    size: 30,
+                  ),
+                  label: ""),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.search_outlined,size: 30), label: ""),
+                  icon: Icon(Icons.search_outlined, size: 30), label: ""),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.notifications_outlined,size: 30), label: ""),
+                  icon: Icon(Icons.notifications_outlined, size: 30),
+                  label: ""),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.email_outlined,size: 30), label: ""),
+                  icon: Icon(Icons.email_outlined, size: 30), label: ""),
             ],
           ),
         );

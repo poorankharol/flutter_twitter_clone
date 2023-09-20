@@ -1,10 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_twitter_clone/core/constants/appcolors.dart';
+import 'package:flutter_twitter_clone/src/dashboard/widget/tweet_item.dart';
+import 'package:flutter_twitter_clone/src/home/cubit/feeds_cubit.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({super.key});
 
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      fetchData();
+    });
+    super.initState();
+  }
+
+  void fetchData() {
+    final cubit = context.read<FeedsCubit>();
+    cubit.fetchData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +104,25 @@ class Home extends StatelessWidget {
           //add more menu item childs here
         ],
       ),
-
+      body: BlocBuilder<FeedsCubit, FeedsState>(
+        builder: (context, state) {
+          if (state is FeedsData) {
+            return ListView.builder(
+                itemCount: state.data.length,
+                itemBuilder: (ctx, index) {
+                  return TweetItem(model: state.data[index]);
+                });
+          }
+          if (state is FeedsLoading) {
+            return const Center(
+              child: CircularProgressIndicator(
+                color: AppColors.blue,
+              ),
+            );
+          }
+          return const Text('user hasn\'t post any Tweet' );
+        },
+      ),
     );
   }
 }
