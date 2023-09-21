@@ -18,4 +18,3 @@ class FeedsData extends FeedsState {
 
   FeedsData(this.data);
 }
-

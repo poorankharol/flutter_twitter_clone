@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_twitter_clone/core/constants/appcolors.dart';
-import 'package:flutter_twitter_clone/src/dashboard/widget/tweet_item.dart';
+import 'package:flutter_twitter_clone/src/home/widget/tweet_item.dart';
 import 'package:flutter_twitter_clone/src/home/cubit/feeds/feeds_cubit.dart';
 
 class Home extends StatefulWidget {
@@ -106,6 +106,9 @@ class _HomeState extends State<Home> {
       body: BlocBuilder<FeedsCubit, FeedsState>(
         builder: (context, state) {
           if (state is FeedsData) {
+            if (state.data.isEmpty) {
+              return const Center(child: Text('User hasn\'t post any Tweet'));
+            }
             return ListView.separated(
               itemCount: state.data.length,
               itemBuilder: (ctx, index) {
@@ -114,7 +117,9 @@ class _HomeState extends State<Home> {
                 );
               },
               separatorBuilder: (BuildContext context, int index) {
-                return const Divider();
+                return const Divider(
+                  thickness: 0.5,
+                );
               },
             );
           }
@@ -125,7 +130,7 @@ class _HomeState extends State<Home> {
               ),
             );
           }
-          return const Text('user hasn\'t post any Tweet');
+          return const Center(child: Text('user hasn\'t post any Tweet'));
         },
       ),
     );

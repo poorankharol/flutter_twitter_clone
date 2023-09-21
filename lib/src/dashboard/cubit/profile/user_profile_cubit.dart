@@ -15,14 +15,11 @@ class UserProfileCubit extends Cubit<UserProfileState> {
   UserProfileCubit(this._userService) : super(UserProfileInitial());
 
   Future<void> fetchData(String uid) async {
-    SharedPref sharedPref = SharedPref();
+    //SharedPref sharedPref = SharedPref();
     emit(UserProfileLoading());
     _userService.getUserInfo(uid).then((value) {
       _userService.getUserTweets(uid: uid).listen((event) {
         value.tweets = event;
-        if (FirebaseAuth.instance.currentUser!.uid == value.uid) {
-          sharedPref.save("user", value);
-        }
         emit(UserProfileData(value));
       });
     });

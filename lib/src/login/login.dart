@@ -44,7 +44,7 @@ class _LoginState extends State<Login> {
       listener: (context, state) {
         switch (state) {
           case LoginUserState.success:
-            Navigator.pushNamed(context, "/home");
+            Navigator.pushNamed(context, "/dashboard");
             break;
           case LoginUserState.user_exists:
             break;

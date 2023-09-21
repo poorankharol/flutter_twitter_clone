@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_twitter_clone/core/constants/appcolors.dart';
 import 'package:flutter_twitter_clone/core/widget/ripple_button.dart';
-import 'package:flutter_twitter_clone/src/dashboard/widget/tweet_item.dart';
+import 'package:flutter_twitter_clone/src/home/widget/tweet_item.dart';
 import 'package:flutter_twitter_clone/src/home/model/post_model.dart';
 
 import '../../../core/helper/utility.dart';
@@ -14,6 +14,7 @@ import '../../../core/widget/cache_image.dart';
 import '../../../core/widget/circular_image.dart';
 import '../../../core/widget/customWidgets.dart';
 import '../../../core/widget/emptyList.dart';
+import '../../home/cubit/feeds/feeds_cubit.dart';
 import '../cubit/following/follow_un_follow_cubit.dart';
 import '../cubit/profile/user_profile_cubit.dart';
 
@@ -68,81 +69,36 @@ class _ProfileNewState extends State<ProfileNew>
 
   Widget _tweetList(
     BuildContext context,
-    //ProfileState authState,
     List<PostModel>? tweetsList,
     bool isReply,
     bool isMedia,
   ) {
     List<PostModel> list = tweetsList!;
 
-    /// If user hasn't tweeted yet
-    // if (tweetsList == null) {
-    //   // cprint('No Tweet available');
-    // } else if (isMedia) {
-    //   /// Display all Tweets with media file
-    //
-    //   list = tweetsList.where((x) => x.imagePath != null).toList();
-    // } else if (!isReply) {
-    //   /// Display all independent Tweets
-    //   /// No comments Tweet will display
-    //
-    //   list = tweetsList
-    //       .where((x) => x.parentkey == null || x.childRetwetkey != null)
-    //       .toList();
-    // } else {
-    //   /// Display all reply Tweets
-    //   /// No independent tweet will display
-    //   list = tweetsList
-    //       .where((x) => x.parentkey != null && x.childRetwetkey == null)
-    //       .toList();
-    // }
-
-    /// if [authState.isbusy] is true then an loading indicator will be displayed on screen.
-    return
-        // authState.isbusy
-        //   ? SizedBox(
-        //       height: MediaQuery.of(context).size.height - 180,
-        //       child: const CustomScreenLoader(
-        //         height: double.infinity,
-        //         width: double.infinity,
-        //         backgroundColor: Colors.white,
-        //       ),
-        //     )
-        //
-        //   /// if tweet list is empty or null then need to show user a message
-        //   :
-        list.isEmpty
-            ? Container(
-                padding: const EdgeInsets.only(top: 50, left: 30, right: 30),
-                child: NotifyText(
-                  title: isMyProfile
-                      ? 'You haven\'t ${isReply ? 'reply to any Tweet' : isMedia ? 'post any media Tweet yet' : 'post any Tweet yet'}'
-                      : '${"user"} hasn\'t ${isReply ? 'reply to any Tweet' : isMedia ? 'post any media Tweet yet' : 'post any Tweet yet'}',
-                  subTitle: isMyProfile
-                      ? 'Tap tweet button to add new'
-                      : 'Once he\'ll do, they will be shown up here',
-                ),
-              )
-
-            /// If tweets available then tweet list will displayed
-            : ListView.builder(
-                padding: const EdgeInsets.symmetric(vertical: 0),
-                itemCount: list.length,
-                itemBuilder: (context, index) => Container(
-                  color: AppColors.white,
-                  child: TweetItem(
-                    model: list[index],
-                    // isDisplayOnProfile: true,
-                    // trailing: TweetBottomSheet().tweetOptionIcon(
-                    //   context,
-                    //   model: list[index],
-                    //   type: TweetType.Tweet,
-                    //   scaffoldKey: scaffoldKey,
-                    // ),
-                    // scaffoldKey: scaffoldKey,
-                  ),
+    return list.isEmpty
+        ? Container(
+            padding: const EdgeInsets.only(top: 50, left: 30, right: 30),
+            child: NotifyText(
+              title: isMyProfile
+                  ? 'You haven\'t ${isReply ? 'reply to any Tweet' : isMedia ? 'post any media Tweet yet' : 'post any Tweet yet'}'
+                  : '${"user"} hasn\'t ${isReply ? 'reply to any Tweet' : isMedia ? 'post any media Tweet yet' : 'post any Tweet yet'}',
+              subTitle: isMyProfile
+                  ? 'Tap tweet button to add new'
+                  : 'Once he\'ll do, they will be shown up here',
+            ),
+          )
+        : ListView.builder(
+            padding: const EdgeInsets.symmetric(vertical: 0),
+            itemCount: list.length,
+            itemBuilder: (context, index) {
+              return Container(
+                color: AppColors.white,
+                child: TweetItem(
+                  model: list[index],
                 ),
               );
+            },
+          );
   }
 
   SliverAppBar getAppbar(BuildContext context, UserModel model) {
@@ -294,8 +250,8 @@ class _ProfileNewState extends State<ProfileNew>
                               });
                             }
                           },
-                          child:
-                              BlocBuilder<FollowUnFollowCubit, FollowUnFollowState>(
+                          child: BlocBuilder<FollowUnFollowCubit,
+                              FollowUnFollowState>(
                             builder: (context, state) {
                               if (state is IsFollowingUserData) {
                                 isFollowing = state.isFollowing;
@@ -309,8 +265,8 @@ class _ProfileNewState extends State<ProfileNew>
                                     color: isMyProfile
                                         ? AppColors.white
                                         : isFollowing
-                                        ? AppColors.blue
-                                        : AppColors.white,
+                                            ? AppColors.blue
+                                            : AppColors.white,
                                     border: Border.all(
                                         color: isMyProfile
                                             ? Colors.black87.withAlpha(180)
@@ -322,14 +278,14 @@ class _ProfileNewState extends State<ProfileNew>
                                     isMyProfile
                                         ? 'Edit Profile'
                                         : isFollowing
-                                        ? 'Following'
-                                        : 'Follow',
+                                            ? 'Following'
+                                            : 'Follow',
                                     style: TextStyle(
                                       color: isMyProfile
                                           ? Colors.black87.withAlpha(180)
                                           : isFollowing
-                                          ? AppColors.white
-                                          : Colors.blue,
+                                              ? AppColors.white
+                                              : Colors.blue,
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -345,8 +301,8 @@ class _ProfileNewState extends State<ProfileNew>
                                   color: isMyProfile
                                       ? AppColors.white
                                       : isFollowing
-                                      ? AppColors.blue
-                                      : AppColors.white,
+                                          ? AppColors.blue
+                                          : AppColors.white,
                                   border: Border.all(
                                       color: isMyProfile
                                           ? Colors.black87.withAlpha(180)
@@ -358,14 +314,14 @@ class _ProfileNewState extends State<ProfileNew>
                                   isMyProfile
                                       ? 'Edit Profile'
                                       : isFollowing
-                                      ? 'Following'
-                                      : 'Follow',
+                                          ? 'Following'
+                                          : 'Follow',
                                   style: TextStyle(
                                     color: isMyProfile
                                         ? Colors.black87.withAlpha(180)
                                         : isFollowing
-                                        ? AppColors.white
-                                        : Colors.blue,
+                                            ? AppColors.white
+                                            : Colors.blue,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
                                   ),

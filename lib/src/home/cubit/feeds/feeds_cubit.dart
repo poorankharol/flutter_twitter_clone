@@ -14,14 +14,18 @@ class FeedsCubit extends Cubit<FeedsState> {
   Future<void> fetchData() async {
     emit(FeedsLoading());
     _postService.getFeeds().then((value) {
-      for (var model in value) {
-        _postService.getCurrentUserLike(model).listen((boolean) {
-          model.isLiked = boolean;
-          _postService.getPostLikeCount(model).listen((event) {
-            model.likesCount = event;
-            emit(FeedsData(value));
+      if (value.isNotEmpty) {
+        for (var model in value) {
+          _postService.getCurrentUserLike(model).listen((boolean) {
+            model.isLiked = boolean;
+            _postService.getPostLikeCount(model).listen((event) {
+              model.likesCount = event;
+              emit(FeedsData(value));
+            });
           });
-        });
+        }
+      } else {
+        emit(FeedsData(value));
       }
     }).onError((error, stackTrace) {
       emit(FeedsError(error.toString()));

@@ -91,19 +91,19 @@ class _DashboardState extends State<Dashboard> {
             borderRadius: BorderRadius.circular(30),
             child: state is UserProfileData
                 ? CachedNetworkImage(
-                    width: 30,
-                    height: 30,
-                    fit: BoxFit.cover,
-                    imageUrl: state.data.profileImage!.isEmpty
-                        ? 'https://firebasestorage.googleapis.com/v0/b/twitter-clone-43c3e.appspot.com/o/placeholder%2Fuser.png?alt=media&token=9c85ab40-b21f-4b95-b661-19f03ebd5b26'
-                        : state.data.profileImage!,
-                  )
+              width: 30,
+              height: 30,
+              fit: BoxFit.cover,
+              imageUrl: state.data.profileImage!.isEmpty
+                  ? 'https://firebasestorage.googleapis.com/v0/b/twitter-clone-43c3e.appspot.com/o/placeholder%2Fuser.png?alt=media&token=9c85ab40-b21f-4b95-b661-19f03ebd5b26'
+                  : state.data.profileImage!,
+            )
                 : CachedNetworkImage(
-                    width: 30,
-                    height: 30,
-                    fit: BoxFit.cover,
-                    imageUrl:
-                        'https://firebasestorage.googleapis.com/v0/b/twitter-clone-43c3e.appspot.com/o/placeholder%2Fuser.png?alt=media&token=9c85ab40-b21f-4b95-b661-19f03ebd5b26'),
+                width: 30,
+                height: 30,
+                fit: BoxFit.cover,
+                imageUrl:
+                'https://firebasestorage.googleapis.com/v0/b/twitter-clone-43c3e.appspot.com/o/placeholder%2Fuser.png?alt=media&token=9c85ab40-b21f-4b95-b661-19f03ebd5b26'),
           ),
         ),
       ),
@@ -192,16 +192,26 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+  Widget _drawer(UserProfileState state) {
+    if (state is UserProfileData) {
+      return DrawerWidget(userLoad:state.data);
+    } else {
+      return const SizedBox();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    var textTheme = Theme.of(context).textTheme;
+    var textTheme = Theme
+        .of(context)
+        .textTheme;
     return BlocBuilder<UserProfileCubit, UserProfileState>(
       builder: (context, state) {
         return Scaffold(
           key: scaffoldKey,
           appBar: _appBar(state),
           body: bottomWidgets.elementAt(_selectedIndex),
-          drawer: const DrawerWidget(),
+          drawer:_drawer(state),
           bottomNavigationBar: BottomNavigationBar(
             selectedItemColor: Colors.black,
             unselectedItemColor: Colors.grey,
@@ -224,9 +234,12 @@ class _DashboardState extends State<Dashboard> {
                   icon: Icon(Icons.notifications_outlined, size: 30),
                   label: ""),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.email_outlined, size: 30), label: ""),
-            ],
-          ),
+                  icon: Icon(Icons.email_outlined, size: 30), label: "")
+              ,
+            ]
+            ,
+          )
+          ,
         );
       },
     );

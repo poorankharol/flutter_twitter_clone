@@ -28,6 +28,7 @@ class PostService {
         .getUserFollowing(FirebaseAuth.instance.currentUser!.uid);
 
     var splitUsers = partition<dynamic>(userFollowing, 10);
+    print(splitUsers);
     List<PostModel> feedList = [];
 
     for (int i = 0; i < splitUsers.length; i++) {
@@ -56,8 +57,9 @@ class PostService {
         id: doc.id,
         creator: data['creator'] ?? '',
         message: data['text'] ?? '',
-        timestamp: data['timeStamp'] ?? 0,
-        isLiked: false,
+        timestamp: data['timeStamp'],
+        isRetweeted: data['retweet'] ?? false,
+        originalId: data['originalId'] ?? '',
       );
     }).toList();
   }
@@ -102,5 +104,71 @@ class PostService {
         .map((event) {
       return event.size;
     });
+  }
+
+  Future retweet(PostModel post, bool current) async {
+    if (current) {
+      //to remove retweet
+      post.retweetsCount = post.retweetsCount - 1;
+      await FirebaseFirestore.instance
+          .collection('posts')
+          .doc(post.id)
+          .collection('retweets')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .delete();
+
+      await FirebaseFirestore.instance
+          .collection('posts')
+          .where("originalId", isEqualTo: post.id)
+          .where("creator", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+          .get()
+          .then((value) {
+        if (value.docs.isEmpty) {
+          return;
+        }
+        FirebaseFirestore.instance
+            .collection('posts')
+            .doc(value.docs[0].id)
+            .delete();
+      });
+      return;
+    }
+
+    post.retweetsCount = post.retweetsCount + 1;
+    await FirebaseFirestore.instance
+        .collection('posts')
+        .doc(post.id)
+        .collection('retweets')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .set({});
+
+    await FirebaseFirestore.instance.collection('posts').add({
+      'creator': FirebaseAuth.instance.currentUser!.uid,
+      'timeStamp': FieldValue.serverTimestamp(),
+      'retweet': true,
+      'originalId': post.id
+    });
+  }
+
+  Future<PostModel?> getPostById(String id) async {
+    DocumentSnapshot snapshot =
+        await FirebaseFirestore.instance.collection("posts").doc(id).get();
+    return _postFromSnapshot(snapshot);
+  }
+
+  PostModel? _postFromSnapshot(DocumentSnapshot snapshot) {
+    if (snapshot.exists) {
+      Map<String, dynamic> data = snapshot.data()! as Map<String, dynamic>;
+      return PostModel(
+        id: snapshot.id,
+        creator: data['creator'] ?? '',
+        message: data['text'] ?? '',
+        timestamp: data['timeStamp'] ?? DateTime.now(),
+        isRetweeted: data['retweet'] ?? false,
+        originalId: data['originalId'] ?? '',
+      );
+    } else {
+      return null;
+    }
   }
 }

@@ -42,11 +42,13 @@ class UserService {
     return querySnapshot.docs.map((doc) {
       Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
       return PostModel(
-          id: doc.id,
-          creator: data['creator'] ?? '',
-          message: data['text'] ?? '',
-          timestamp: data['timeStamp'] ?? 0,
-          isLiked: false);
+        id: doc.id,
+        creator: data['creator'] ?? '',
+        message: data['text'] ?? '',
+        timestamp: data['timeStamp'],
+        isRetweeted: data['retweet'] ?? false,
+        originalId: data['originalId']?? '',
+      );
     }).toList();
   }
 

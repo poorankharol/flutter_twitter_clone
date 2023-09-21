@@ -2,36 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../../core/helper/sharedprefs.dart';
 import '../../../core/model/user.dart';
 
-class DrawerWidget extends StatefulWidget {
-  const DrawerWidget({super.key});
-
-  @override
-  State<DrawerWidget> createState() => _DrawerWidgetState();
-}
-
-class _DrawerWidgetState extends State<DrawerWidget> {
-  SharedPref sharedPref = SharedPref();
-  UserModel? userLoad;
-
-  loadSharedPrefs() async {
-    try {
-      UserModel user = UserModel.fromJson(await sharedPref.read("user"));
-      setState(() {
-        userLoad = user;
-      });
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  @override
-  void initState() {
-    loadSharedPrefs();
-    super.initState();
-  }
+class DrawerWidget extends StatelessWidget {
+  const DrawerWidget({super.key, required this.userLoad});
+  final UserModel? userLoad;
 
   @override
   Widget build(BuildContext context) {
@@ -55,20 +30,20 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     borderRadius: BorderRadius.circular(30),
                     child: userLoad != null
                         ? CachedNetworkImage(
-                            width: 40,
-                            height: 40,
-                            fit: BoxFit.cover,
-                            imageUrl: userLoad!.profileImage!.isEmpty
-                                ? 'https://firebasestorage.googleapis.com/v0/b/twitter-clone-43c3e.appspot.com/o/placeholder%2Fuser.png?alt=media&token=9c85ab40-b21f-4b95-b661-19f03ebd5b26'
-                                : userLoad!.profileImage!,
-                          )
+                      width: 40,
+                      height: 40,
+                      fit: BoxFit.cover,
+                      imageUrl: userLoad!.profileImage!.isEmpty
+                          ? 'https://firebasestorage.googleapis.com/v0/b/twitter-clone-43c3e.appspot.com/o/placeholder%2Fuser.png?alt=media&token=9c85ab40-b21f-4b95-b661-19f03ebd5b26'
+                          : userLoad!.profileImage!,
+                    )
                         : CachedNetworkImage(
-                            width: 40,
-                            height: 40,
-                            fit: BoxFit.cover,
-                            imageUrl:
-                                'https://firebasestorage.googleapis.com/v0/b/twitter-clone-43c3e.appspot.com/o/placeholder%2Fuser.png?alt=media&token=9c85ab40-b21f-4b95-b661-19f03ebd5b26',
-                          ),
+                      width: 40,
+                      height: 40,
+                      fit: BoxFit.cover,
+                      imageUrl:
+                      'https://firebasestorage.googleapis.com/v0/b/twitter-clone-43c3e.appspot.com/o/placeholder%2Fuser.png?alt=media&token=9c85ab40-b21f-4b95-b661-19f03ebd5b26',
+                    ),
                   ),
                 ),
                 const SizedBox(
@@ -130,7 +105,6 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                           fontSize: 14,
                         ),
                       ),
-
                     ],
                   ),
                 ),
@@ -143,7 +117,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             ),
             title: const Text('Profile'),
             onTap: () {
-              Navigator.pushNamed(context, "/profile",arguments: userLoad);
+              Navigator.pushNamed(context, "/profile", arguments: userLoad);
             },
           ),
           ListTile(
