@@ -9,10 +9,10 @@ import 'package:intl/intl.dart';
 import '../../../core/widget/circular_image.dart';
 
 class TweetItem extends StatelessWidget {
-  const TweetItem({super.key, required this.model, this.isRetweeted = false});
+  const TweetItem({super.key, required this.model, required this.isRetweet});
 
   final PostModel model;
-  final bool isRetweeted;
+  final bool isRetweet;
 
   getDateFormat(DateTime toCheck) {
     final now = DateTime.now();
@@ -67,7 +67,7 @@ class TweetItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return mainTweet(model.user ?? UserModel(),context);
+    return mainTweet(model.user!, context);
   }
 
   Widget tweetsOption(BuildContext context) {
@@ -90,24 +90,20 @@ class TweetItem extends StatelessWidget {
         ),
         Row(
           children: [
-            RotatedBox(
-              quarterTurns: 1,
-              child: IconButton(
-                icon: Icon(
-                  Icons.repeat_rounded,
-                  color: model.isRetweeted ? Colors.blue : Colors.grey,
-                  size: 20,
-                ),
-                onPressed: () {
-                  final retweet = context.read<RetweetCubit>();
-                  retweet.retweetPost(model, model.isRetweeted);
-                },
+            IconButton(
+              icon: Icon(
+                Icons.repeat_rounded,
+                color: isRetweet ? Colors.blue : Colors.grey,
+                size: 20,
               ),
+              onPressed: () {
+                final retweet = context.read<RetweetCubit>();
+                retweet.retweetPost(model, isRetweet);
+              },
             ),
-            const SizedBox(
-              width: 10,
-            ),
-            const Text(""),
+            model.retweetsCount == 0
+                ? const SizedBox()
+                : Text("${model.retweetsCount}"),
           ],
         ),
         Row(
@@ -123,9 +119,6 @@ class TweetItem extends StatelessWidget {
                 like.likePost(model, model.isLiked);
               },
             ),
-            const SizedBox(
-              width: 10,
-            ),
             model.likesCount == 0
                 ? const SizedBox()
                 : Text("${model.likesCount}"),
@@ -140,12 +133,12 @@ class TweetItem extends StatelessWidget {
     );
   }
 
-  Widget mainTweet(UserModel user,BuildContext context) {
+  Widget mainTweet(UserModel user, BuildContext context) {
     var textTheme = Theme.of(context).textTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        isRetweeted
+        isRetweet
             ? const Row(
                 children: [
                   SizedBox(

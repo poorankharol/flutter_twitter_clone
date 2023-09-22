@@ -58,7 +58,7 @@ class PostService {
         id: doc.id,
         creator: data['creator'] ?? '',
         message: data['text'] ?? '',
-        timestamp: data['timeStamp'],
+        timestamp: data['timeStamp'] ?? 0,
         isRetweeted: data['retweet'] ?? false,
         originalId: data['originalId'] ?? '',
       );
@@ -107,10 +107,26 @@ class PostService {
     });
   }
 
+  Stream<int> getPostRetweetCount(PostModel post) {
+    return FirebaseFirestore.instance
+        .collection('posts')
+        .doc(post.id)
+        .collection('retweets')
+        .snapshots()
+        .map((event) {
+      return event.size;
+    });
+  }
+
   Future retweet(PostModel post, bool current) async {
     if (current) {
       //to remove retweet
       post.retweetsCount = post.retweetsCount - 1;
+      // print(post.id);
+      // await FirebaseFirestore.instance.collection('posts').doc(post.id).update({
+      //   'retweet': false,
+      // }).then((value) => print("Updated"));
+
       await FirebaseFirestore.instance
           .collection('posts')
           .doc(post.id)
@@ -136,6 +152,13 @@ class PostService {
     }
 
     post.retweetsCount = post.retweetsCount + 1;
+
+    // print(post.id);
+    // await FirebaseFirestore.instance.collection('posts').doc(post.id).update({
+    //   'retweet': true,
+    // }).then((value) => print("Updated"));
+
+
     await FirebaseFirestore.instance
         .collection('posts')
         .doc(post.id)
@@ -164,7 +187,7 @@ class PostService {
         id: snapshot.id,
         creator: data['creator'] ?? '',
         message: data['text'] ?? '',
-        timestamp: data['timeStamp'] ?? DateTime.now(),
+        timestamp: data['timeStamp'] ?? 0,
         isRetweeted: data['retweet'] ?? false,
         originalId: data['originalId'] ?? '',
       );

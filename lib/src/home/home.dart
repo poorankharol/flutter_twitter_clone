@@ -126,7 +126,7 @@ class _HomeState extends State<Home> {
                         var post = state.model;
                         return TweetItem(
                           model: post,
-                          isRetweeted: true,
+                          isRetweet: true,
                         );
                       }
                       return const SizedBox();
@@ -135,6 +135,7 @@ class _HomeState extends State<Home> {
                 } else {
                   return TweetItem(
                     model: feeds[index],
+                    isRetweet: false,
                   );
                 }
               },

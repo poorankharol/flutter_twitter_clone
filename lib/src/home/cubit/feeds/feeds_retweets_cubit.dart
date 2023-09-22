@@ -20,9 +20,12 @@ class FeedsRetweetsCubit extends Cubit<FeedsRetweetsState> {
         model.isLiked = boolean;
         _postService.getPostLikeCount(model).listen((event) {
           model.likesCount = event;
-          _userService.getUserInfo(model.creator).then((user) {
-            model.user = user;
-            emit(FeedsRetweetsData(model));
+          _postService.getPostRetweetCount(model).listen((event) {
+            model.retweetsCount = event;
+            _userService.getUserInfo(model.creator).then((user) {
+              model.user = user;
+              emit(FeedsRetweetsData(model));
+            });
           });
         });
       });

@@ -45,7 +45,7 @@ class UserService {
         id: doc.id,
         creator: data['creator'] ?? '',
         message: data['text'] ?? '',
-        timestamp: data['timeStamp'],
+        timestamp: data['timeStamp'] ?? 0,
         isRetweeted: data['retweet'] ?? false,
         originalId: data['originalId']?? '',
       );
