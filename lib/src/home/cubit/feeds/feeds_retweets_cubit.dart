@@ -24,7 +24,10 @@ class FeedsRetweetsCubit extends Cubit<FeedsRetweetsState> {
             model.retweetsCount = event;
             _userService.getUserInfo(model.creator).then((user) {
               model.user = user;
-              emit(FeedsRetweetsData(model));
+              _postService.getCurrentUserRetweet(model).listen((event) {
+                model.currentUserRetweet = event;
+                emit(FeedsRetweetsData(model));
+              });
             });
           });
         });

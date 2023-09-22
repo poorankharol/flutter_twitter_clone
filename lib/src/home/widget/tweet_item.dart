@@ -9,10 +9,11 @@ import 'package:intl/intl.dart';
 import '../../../core/widget/circular_image.dart';
 
 class TweetItem extends StatelessWidget {
-  const TweetItem({super.key, required this.model, required this.isRetweet});
+  const TweetItem({super.key, required this.model, required this.isRetweet, required this.currentUserRetweet});
 
   final PostModel model;
   final bool isRetweet;
+  final bool currentUserRetweet;
 
   getDateFormat(DateTime toCheck) {
     final now = DateTime.now();
@@ -93,12 +94,12 @@ class TweetItem extends StatelessWidget {
             IconButton(
               icon: Icon(
                 Icons.repeat_rounded,
-                color: isRetweet ? Colors.blue : Colors.grey,
+                color: currentUserRetweet ? Colors.blue : Colors.grey,
                 size: 20,
               ),
               onPressed: () {
                 final retweet = context.read<RetweetCubit>();
-                retweet.retweetPost(model, isRetweet);
+                retweet.retweetPost(model, currentUserRetweet);
               },
             ),
             model.retweetsCount == 0
@@ -138,7 +139,7 @@ class TweetItem extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        isRetweet
+        (isRetweet || currentUserRetweet)
             ? const Row(
                 children: [
                   SizedBox(

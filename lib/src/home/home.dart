@@ -127,6 +127,7 @@ class _HomeState extends State<Home> {
                         return TweetItem(
                           model: post,
                           isRetweet: true,
+                          currentUserRetweet: post.currentUserRetweet,
                         );
                       }
                       return const SizedBox();
@@ -136,6 +137,7 @@ class _HomeState extends State<Home> {
                   return TweetItem(
                     model: feeds[index],
                     isRetweet: false,
+                    currentUserRetweet: false,
                   );
                 }
               },

@@ -13,6 +13,7 @@ class PostModel {
   int retweetsCount = 0;
   String originalId;
   UserModel? user;
+  bool currentUserRetweet = false;
 
   PostModel(
       {required this.id,

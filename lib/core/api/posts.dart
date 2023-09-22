@@ -195,4 +195,16 @@ class PostService {
       return null;
     }
   }
+
+  Stream<bool> getCurrentUserRetweet(PostModel post) {
+    return FirebaseFirestore.instance
+        .collection("posts")
+        .doc(post.id)
+        .collection("retweets")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.exists;
+    });
+  }
 }

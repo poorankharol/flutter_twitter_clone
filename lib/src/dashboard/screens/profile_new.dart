@@ -95,6 +95,7 @@ class _ProfileNewState extends State<ProfileNew>
                 color: AppColors.white,
                 child: TweetItem(
                   model: list[index], isRetweet: false,
+                  currentUserRetweet: false,
                 ),
               );
             },
