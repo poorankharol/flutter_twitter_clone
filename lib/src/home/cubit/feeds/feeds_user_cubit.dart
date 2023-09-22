@@ -14,16 +14,17 @@ class FeedsUserCubit extends Cubit<FeedsUserState> {
 
   Future<void> getUserInfo(String uid) async {
     emit(FeedsUserLoading());
-    // _userService.getUserInfo(uid).then((value) {
-    //   emit(FeedsUserData(value));
-    // }).onError((error, stackTrace) {
-    //   emit(FeedsUserError(error.toString()));
-    // });
-    try {
-      var data = await _userService.getUserInfo(uid);
-      emit(FeedsUserData(data));
-    } catch (e) {
-      emit(FeedsUserError(e.toString()));
-    }
+    _userService.getUserInfo(uid).then((value) {
+      emit(FeedsUserData(value));
+    }).onError((error, stackTrace) {
+      emit(FeedsUserError(error.toString()));
+    });
+    // try {
+    //   var userData = await _userService.getUserInfo(uid);
+    //   final updatedData = state.copyWith(userData); // Update the model
+    //   emit(updatedData);
+    // } catch (e) {
+    //   //emit(FeedsUserError(e.toString()));
+    // }
   }
 }

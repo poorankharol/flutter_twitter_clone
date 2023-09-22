@@ -9,7 +9,9 @@ part 'feeds_state.dart';
 
 class FeedsCubit extends Cubit<FeedsState> {
   final PostService _postService;
-  FeedsCubit(this._postService) : super(FeedsInitial());
+  final UserService _userService;
+
+  FeedsCubit(this._postService, this._userService) : super(FeedsInitial());
 
   Future<void> fetchData() async {
     emit(FeedsLoading());
@@ -20,7 +22,10 @@ class FeedsCubit extends Cubit<FeedsState> {
             model.isLiked = boolean;
             _postService.getPostLikeCount(model).listen((event) {
               model.likesCount = event;
-              emit(FeedsData(value));
+              _userService.getUserInfo(model.creator).then((user) {
+                model.user = user;
+                emit(FeedsData(value));
+              });
             });
           });
         }

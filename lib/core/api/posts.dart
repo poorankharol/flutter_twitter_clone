@@ -26,7 +26,7 @@ class PostService {
   Future<List<PostModel>> getFeeds() async {
     List<String> userFollowing = await UserService()
         .getUserFollowing(FirebaseAuth.instance.currentUser!.uid);
-    //userFollowing.add(FirebaseAuth.instance.currentUser!.uid);
+    userFollowing.add(FirebaseAuth.instance.currentUser!.uid);
     var splitUsers = partition<dynamic>(userFollowing, 1);
 
     print(splitUsers);

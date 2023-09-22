@@ -5,6 +5,9 @@ import 'package:flutter_twitter_clone/core/constants/appcolors.dart';
 import 'package:flutter_twitter_clone/src/home/widget/tweet_item.dart';
 import 'package:flutter_twitter_clone/src/home/cubit/feeds/feeds_cubit.dart';
 
+import 'cubit/feeds/feeds_retweets_cubit.dart';
+import 'cubit/feeds/feeds_user_cubit.dart';
+
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -106,15 +109,34 @@ class _HomeState extends State<Home> {
       body: BlocBuilder<FeedsCubit, FeedsState>(
         builder: (context, state) {
           if (state is FeedsData) {
-            if (state.data.isEmpty) {
+            var feeds = state.data;
+            if (feeds.isEmpty) {
               return const Center(child: Text('User hasn\'t post any Tweet'));
             }
             return ListView.separated(
-              itemCount: state.data.length,
+              itemCount: feeds.length,
               itemBuilder: (ctx, index) {
-                return TweetItem(
-                  model: state.data[index],
-                );
+                if (feeds[index].isRetweeted) {
+                  context
+                      .read<FeedsRetweetsCubit>()
+                      .getPostById(feeds[index].originalId);
+                  return BlocBuilder<FeedsRetweetsCubit, FeedsRetweetsState>(
+                    builder: (context, state) {
+                      if (state is FeedsRetweetsData) {
+                        var post = state.model;
+                        return TweetItem(
+                          model: post,
+                          isRetweeted: true,
+                        );
+                      }
+                      return const SizedBox();
+                    },
+                  );
+                } else {
+                  return TweetItem(
+                    model: feeds[index],
+                  );
+                }
               },
               separatorBuilder: (BuildContext context, int index) {
                 return const Divider(

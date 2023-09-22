@@ -7,33 +7,14 @@ import 'package:flutter_twitter_clone/src/home/model/post_model.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/widget/circular_image.dart';
-import '../cubit/feeds/feeds_user_cubit.dart';
 
-class TweetItem extends StatefulWidget {
-  const TweetItem({super.key, required this.model});
+class TweetItem extends StatelessWidget {
+  const TweetItem({super.key, required this.model, this.isRetweeted = false});
 
   final PostModel model;
+  final bool isRetweeted;
 
-  @override
-  State<TweetItem> createState() => _TweetItemState();
-}
-
-class _TweetItemState extends State<TweetItem> {
-  PostModel? retweetedPost;
-
-  @override
-  void initState() {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        fetchData();
-    });
-    super.initState();
-  }
-
-  void fetchData() async {
-    await context.read<FeedsUserCubit>().getUserInfo(widget.model.creator);
-  }
-
-  String getDateFormat(DateTime toCheck) {
+  getDateFormat(DateTime toCheck) {
     final now = DateTime.now();
     final today = DateTime(
       now.year,
@@ -86,18 +67,10 @@ class _TweetItemState extends State<TweetItem> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FeedsUserCubit, FeedsUserState>(
-      builder: (context, state) {
-        if (state is FeedsUserData) {
-          var user = state.user;
-          return mainTweet(user);
-        }
-        return const SizedBox.shrink();
-      },
-    );
+    return mainTweet(model.user ?? UserModel(),context);
   }
 
-  Widget tweetsOption() {
+  Widget tweetsOption(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -122,12 +95,12 @@ class _TweetItemState extends State<TweetItem> {
               child: IconButton(
                 icon: Icon(
                   Icons.repeat_rounded,
-                  color: widget.model.isRetweeted ? Colors.blue : Colors.grey,
+                  color: model.isRetweeted ? Colors.blue : Colors.grey,
                   size: 20,
                 ),
                 onPressed: () {
                   final retweet = context.read<RetweetCubit>();
-                  retweet.retweetPost(widget.model, widget.model.isRetweeted);
+                  retweet.retweetPost(model, model.isRetweeted);
                 },
               ),
             ),
@@ -141,19 +114,21 @@ class _TweetItemState extends State<TweetItem> {
           children: [
             IconButton(
               icon: Icon(
-                widget.model.isLiked ? Icons.favorite : Icons.favorite_border,
+                model.isLiked ? Icons.favorite : Icons.favorite_border,
                 size: 20,
-                color: widget.model.isLiked ? Colors.red : Colors.grey,
+                color: model.isLiked ? Colors.red : Colors.grey,
               ),
               onPressed: () {
                 final like = context.read<LikeCubit>();
-                like.likePost(widget.model, widget.model.isLiked);
+                like.likePost(model, model.isLiked);
               },
             ),
             const SizedBox(
               width: 10,
             ),
-            widget.model.likesCount == 0 ? const SizedBox():Text("${widget.model.likesCount}"),
+            model.likesCount == 0
+                ? const SizedBox()
+                : Text("${model.likesCount}"),
           ],
         ),
         const Icon(
@@ -165,12 +140,12 @@ class _TweetItemState extends State<TweetItem> {
     );
   }
 
-  Widget mainTweet(UserModel user) {
+  Widget mainTweet(UserModel user,BuildContext context) {
     var textTheme = Theme.of(context).textTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        widget.model.isRetweeted
+        isRetweeted
             ? const Row(
                 children: [
                   SizedBox(
@@ -249,7 +224,7 @@ class _TweetItemState extends State<TweetItem> {
                         ),
                         Expanded(
                           child: Text(
-                            "• ${getDateFormat(widget.model.timestamp.toDate())}",
+                            "• ${getDateFormat(model.timestamp.toDate())}",
                             maxLines: 1,
                             style: textTheme.titleMedium!.copyWith(
                                 fontSize: 14,
@@ -266,7 +241,7 @@ class _TweetItemState extends State<TweetItem> {
                     ),
                   ),
                   Text(
-                    widget.model.message,
+                    model.message,
                     style: textTheme.titleMedium!.copyWith(
                       fontSize: 16,
                     ),
@@ -274,7 +249,7 @@ class _TweetItemState extends State<TweetItem> {
                   const SizedBox(
                     height: 15,
                   ),
-                  tweetsOption(),
+                  tweetsOption(context),
                 ],
               ),
             ),

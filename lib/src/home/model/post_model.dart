@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../../core/model/user.dart';
+
 class PostModel {
   final String id;
   final String creator;
@@ -10,6 +12,7 @@ class PostModel {
   int likesCount = 0;
   int retweetsCount = 0;
   String originalId;
+  UserModel? user;
 
   PostModel(
       {required this.id,

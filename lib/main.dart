@@ -67,7 +67,7 @@ class MyApp extends StatelessWidget {
           create: (_) => FollowUnFollowCubit(UserService()),
         ),
         BlocProvider<FeedsCubit>(
-          create: (_) => FeedsCubit(PostService()),
+          create: (_) => FeedsCubit(PostService(),UserService()),
         ),
         BlocProvider<FeedsUserCubit>(
           create: (_) => FeedsUserCubit(UserService()),
@@ -79,7 +79,7 @@ class MyApp extends StatelessWidget {
           create: (_) => RetweetCubit(PostService()),
         ),
         BlocProvider<FeedsRetweetsCubit>(
-          create: (_) => FeedsRetweetsCubit(PostService()),
+          create: (_) => FeedsRetweetsCubit(PostService(),UserService()),
         ),
       ],
       child: MaterialApp(

@@ -13,19 +13,18 @@ class UserModel {
   final String? username;
   List<PostModel>? tweets;
 
-  UserModel({
-    this.uid,
-    this.name,
-    this.email,
-    this.profileImage,
-    this.bannerImage,
-    this.tweets,
-    this.bio,
-    this.location,
-    this.website,
-    this.dob,
-    this.username
-  });
+  UserModel(
+      {this.uid,
+      this.name,
+      this.email,
+      this.profileImage,
+      this.bannerImage,
+      this.tweets,
+      this.bio,
+      this.location,
+      this.website,
+      this.dob,
+      this.username});
 
   UserModel.fromJson(Map<String, dynamic> json)
       : uid = json['uid'],
@@ -63,4 +62,19 @@ class UserModel {
       'dob': dob ?? '',
     };
   }
+
+  // copyWith(UserModel userData) {
+  //   return UserModel(
+  //     uid: userData.uid,
+  //       name : userData.name,
+  //       email : email'],
+  //       profileImage : profileImage'],
+  //       bannerImage : bannerImage'],
+  //       bio : bio'],
+  //       location : location'],
+  //       website : website'],
+  //       dob : dob'],
+  //       username : username']
+  //   );
+  // }
 }
