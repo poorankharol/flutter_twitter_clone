@@ -23,15 +23,14 @@ class _TweetItemState extends State<TweetItem> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      fetchData();
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        fetchData();
     });
     super.initState();
   }
 
-  void fetchData() {
-    final cubit = context.read<FeedsUserCubit>();
-    cubit.getUserInfo(widget.model.creator);
+  void fetchData() async {
+    await context.read<FeedsUserCubit>().getUserInfo(widget.model.creator);
   }
 
   String getDateFormat(DateTime toCheck) {
@@ -248,15 +247,16 @@ class _TweetItemState extends State<TweetItem> {
                         const SizedBox(
                           width: 5,
                         ),
-                        Text(
-                          "• ${getDateFormat(widget.model.timestamp.toDate())}",
-                          maxLines: 1,
-                          style: textTheme.titleMedium!.copyWith(
-                              fontSize: 14,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.w400),
+                        Expanded(
+                          child: Text(
+                            "• ${getDateFormat(widget.model.timestamp.toDate())}",
+                            maxLines: 1,
+                            style: textTheme.titleMedium!.copyWith(
+                                fontSize: 14,
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w400),
+                          ),
                         ),
-                        const Spacer(),
                         const Icon(
                           Icons.keyboard_arrow_down,
                           color: Colors.grey,
@@ -278,9 +278,6 @@ class _TweetItemState extends State<TweetItem> {
                 ],
               ),
             ),
-            const SizedBox(
-              width: 10,
-            )
           ],
         ),
       ],

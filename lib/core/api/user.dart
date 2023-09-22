@@ -27,13 +27,13 @@ class UserService {
     );
   }
 
-  Future<Iterable<String>> getUserFollowing(uid) async {
+  Future<List<String>> getUserFollowing(uid) async {
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
         .collection('following')
         .get();
-    final users = querySnapshot.docs.map((doc) => doc.id);
+    final users = querySnapshot.docs.map((doc) => doc.id).toList();
     return users;
   }
 

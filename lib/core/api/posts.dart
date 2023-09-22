@@ -24,10 +24,11 @@ class PostService {
   }
 
   Future<List<PostModel>> getFeeds() async {
-    Iterable<String> userFollowing = await UserService()
+    List<String> userFollowing = await UserService()
         .getUserFollowing(FirebaseAuth.instance.currentUser!.uid);
+    //userFollowing.add(FirebaseAuth.instance.currentUser!.uid);
+    var splitUsers = partition<dynamic>(userFollowing, 1);
 
-    var splitUsers = partition<dynamic>(userFollowing, 10);
     print(splitUsers);
     List<PostModel> feedList = [];
 
