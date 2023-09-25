@@ -17,7 +17,9 @@ import 'package:flutter_twitter_clone/src/home/cubit/feeds/feeds_cubit.dart';
 import 'package:flutter_twitter_clone/src/home/cubit/feeds/feeds_retweets_cubit.dart';
 import 'package:flutter_twitter_clone/src/home/cubit/feeds/feeds_user_cubit.dart';
 import 'package:flutter_twitter_clone/src/home/cubit/like/like_cubit.dart';
+import 'package:flutter_twitter_clone/src/home/cubit/replies/replies_cubit.dart';
 import 'package:flutter_twitter_clone/src/home/cubit/retweet/retweet_cubit.dart';
+import 'package:flutter_twitter_clone/src/home/widget/replies.dart';
 import 'package:flutter_twitter_clone/src/login/cubit/login_user_cubit.dart';
 import 'package:flutter_twitter_clone/src/login/login.dart';
 import 'package:flutter_twitter_clone/src/register/cubit/register_user_cubit.dart';
@@ -81,6 +83,9 @@ class MyApp extends StatelessWidget {
         BlocProvider<FeedsRetweetsCubit>(
           create: (_) => FeedsRetweetsCubit(PostService(),UserService()),
         ),
+        BlocProvider<RepliesCubit>(
+          create: (_) => RepliesCubit(RepliesInitial()),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -99,6 +104,7 @@ class MyApp extends StatelessWidget {
           //'/profile': (context) => const ProfileNew(),
           '/editProfile': (context) => const EditProfile(),
           '/search': (context) => const SearchWidget(),
+          '/replies': (context) => const Replies(),
         },
         onGenerateRoute: (settings) {
           if (settings.name == '/profile') {

@@ -9,7 +9,11 @@ import 'package:intl/intl.dart';
 import '../../../core/widget/circular_image.dart';
 
 class TweetItem extends StatelessWidget {
-  const TweetItem({super.key, required this.model, required this.isRetweet, required this.currentUserRetweet});
+  const TweetItem(
+      {super.key,
+      required this.model,
+      required this.isRetweet,
+      required this.currentUserRetweet});
 
   final PostModel model;
   final bool isRetweet;
@@ -76,17 +80,22 @@ class TweetItem extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Row(
+        Row(
           children: [
-            Icon(
-              Icons.mode_comment_outlined,
-              color: Colors.grey,
-              size: 20,
+            IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/replies',arguments: model);
+              },
+              icon: const Icon(
+                Icons.mode_comment_outlined,
+                color: Colors.grey,
+                size: 20,
+              ),
             ),
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
-            Text(""),
+            const Text(""),
           ],
         ),
         Row(

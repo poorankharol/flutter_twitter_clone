@@ -158,7 +158,6 @@ class PostService {
     //   'retweet': true,
     // }).then((value) => print("Updated"));
 
-
     await FirebaseFirestore.instance
         .collection('posts')
         .doc(post.id)
@@ -206,5 +205,42 @@ class PostService {
         .map((snapshot) {
       return snapshot.exists;
     });
+  }
+
+  Future<List<PostModel>> getReplies(PostModel post) async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('posts')
+        .doc(post.id)
+        .collection('replies')
+        .orderBy('timeStamp', descending: true)
+        .get();
+
+    return _postListFromSnapshot(querySnapshot);
+  }
+
+  void postReply({
+    required PostModel post,
+    required String message,
+    required PostListener postListener,
+  }) async {
+    if (message.isEmpty) {
+      return;
+    }
+    try {
+      await FirebaseFirestore.instance
+          .collection("posts")
+          .doc(post.id)
+          .collection('replies')
+          .add({
+        'text': message,
+        "creator": FirebaseAuth.instance.currentUser!.uid,
+        "timeStamp": FieldValue.serverTimestamp(),
+        'retweet': false
+      });
+      postListener.success();
+    } catch (e) {
+      print(e);
+      postListener.failed();
+    }
   }
 }
