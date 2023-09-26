@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_twitter_clone/core/helper/utility.dart';
 import 'package:flutter_twitter_clone/core/model/user.dart';
 import 'package:flutter_twitter_clone/src/home/cubit/like/like_cubit.dart';
 import 'package:flutter_twitter_clone/src/home/cubit/retweet/retweet_cubit.dart';
 import 'package:flutter_twitter_clone/src/home/model/post_model.dart';
-import 'package:intl/intl.dart';
 
 import '../../../core/widget/circular_image.dart';
 
@@ -19,60 +19,17 @@ class TweetItem extends StatelessWidget {
   final bool isRetweet;
   final bool currentUserRetweet;
 
-  getDateFormat(DateTime toCheck) {
-    final now = DateTime.now();
-    final today = DateTime(
-      now.year,
-      now.month,
-      now.day,
-      //now.hour,
-      //now.minute,
-      //now.second,
-    );
-    final yesterday = DateTime(
-      now.year,
-      now.month,
-      now.day - 1,
-    );
-
-    final dateToCheck = toCheck;
-    final aDate = DateTime(
-      dateToCheck.year,
-      dateToCheck.month,
-      dateToCheck.day,
-      //dateToCheck.hour,
-      //dateToCheck.minute,
-      //dateToCheck.second,
-    );
-    if (aDate == now) {
-      return "now";
-    } else if (aDate == today) {
-      var diffDt = now.difference(dateToCheck);
-      if (diffDt.inHours > 0) {
-        return "${diffDt.inHours} h";
-      } else {
-        return "${diffDt.inMinutes} m";
-      }
-      //return "${DateFormat('m').format(toCheck)} m";
-      //return "today";
-      // String totalMinutes = "";
-      // var minutes = aDate.minute;
-      // print(minutes);
-      // var hours = aDate.hour;
-      // print(hours);
-      // totalMinutes += hours > 0 ? "$hours h " : "";
-      // totalMinutes += minutes > 0 ? "$minutes m" : "";
-      // return totalMinutes;
-    } else if (aDate == yesterday) {
-      return "yesterday";
-    } else {
-      return DateFormat('dd MMM').format(toCheck);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return mainTweet(model.user!, context);
+    return InkWell(
+      onTap: () {
+        Navigator.pushNamed(context, "/tweetDetails", arguments: {
+          'post': model,
+          'currentUserRetweet': currentUserRetweet
+        });
+      },
+      child: mainTweet(model.user!, context),
+    );
   }
 
   Widget tweetsOption(BuildContext context) {
@@ -84,7 +41,7 @@ class TweetItem extends StatelessWidget {
           children: [
             IconButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/replies',arguments: model);
+                Navigator.pushNamed(context, '/replies', arguments: model);
               },
               icon: const Icon(
                 Icons.mode_comment_outlined,
@@ -227,7 +184,7 @@ class TweetItem extends StatelessWidget {
                         ),
                         Expanded(
                           child: Text(
-                            "• ${getDateFormat(model.timestamp.toDate())}",
+                            "• ${Utility.getDateFormat(model.timestamp.toDate())}",
                             maxLines: 1,
                             style: textTheme.titleMedium!.copyWith(
                                 fontSize: 14,

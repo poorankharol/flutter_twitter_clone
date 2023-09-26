@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_twitter_clone/core/constants/appcolors.dart';
 import 'package:flutter_twitter_clone/src/dashboard/widget/drawer.dart';
-import 'package:flutter_twitter_clone/src/home/home.dart';
+import 'package:flutter_twitter_clone/src/home/screens/home.dart';
 import 'package:username_generator/username_generator.dart';
 
 import '../../../core/helper/sharedprefs.dart';

@@ -5,8 +5,8 @@ import 'package:flutter_twitter_clone/core/constants/appcolors.dart';
 import 'package:flutter_twitter_clone/src/home/widget/tweet_item.dart';
 import 'package:flutter_twitter_clone/src/home/cubit/feeds/feeds_cubit.dart';
 
-import 'cubit/feeds/feeds_retweets_cubit.dart';
-import 'cubit/feeds/feeds_user_cubit.dart';
+import '../cubit/feeds/feeds_retweets_cubit.dart';
+import '../cubit/feeds/feeds_user_cubit.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});

@@ -19,7 +19,8 @@ import 'package:flutter_twitter_clone/src/home/cubit/feeds/feeds_user_cubit.dart
 import 'package:flutter_twitter_clone/src/home/cubit/like/like_cubit.dart';
 import 'package:flutter_twitter_clone/src/home/cubit/replies/replies_cubit.dart';
 import 'package:flutter_twitter_clone/src/home/cubit/retweet/retweet_cubit.dart';
-import 'package:flutter_twitter_clone/src/home/widget/replies.dart';
+import 'package:flutter_twitter_clone/src/home/screens/replies.dart';
+import 'package:flutter_twitter_clone/src/home/screens/tweet_details.dart';
 import 'package:flutter_twitter_clone/src/login/cubit/login_user_cubit.dart';
 import 'package:flutter_twitter_clone/src/login/login.dart';
 import 'package:flutter_twitter_clone/src/register/cubit/register_user_cubit.dart';
@@ -105,6 +106,7 @@ class MyApp extends StatelessWidget {
           '/editProfile': (context) => const EditProfile(),
           '/search': (context) => const SearchWidget(),
           '/replies': (context) => const Replies(),
+          '/tweetDetails': (context) => const TweetDetails(),
         },
         onGenerateRoute: (settings) {
           if (settings.name == '/profile') {

@@ -3,7 +3,9 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+
 //import 'package:firebase_database/firebase_database.dart';
 //import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/foundation.dart';
@@ -15,10 +17,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../widget/customLoader.dart';
 
-
 final kAnalytics = FirebaseAnalytics.instance;
 //final DatabaseReference kDatabase = FirebaseDatabase.instance.ref();
 final kScreenLoader = CustomLoader();
+
 void cprint(dynamic data,
     {String? errorIn, String? event, String label = 'Log'}) {
   /// Print logs only in development mode
@@ -46,8 +48,15 @@ class Utility {
     }
     var dt = DateTime.parse(date).toLocal();
     var dat =
-        DateFormat.jm().format(dt) + ' - ' + DateFormat("dd MMM yy").format(dt);
+        '${DateFormat.jm().format(dt)} - ${DateFormat("dd MMM yy").format(dt)}';
     return dat;
+  }
+
+  static String getOriginalTimeStamp(Timestamp timestamp) {
+    DateTime dateTime = timestamp.toDate();
+    String timeOnly = DateFormat('hh:mm a').format(dateTime).toLowerCase();
+    String dateOnly = DateFormat('dd MMM yy').format(dateTime);
+    return "$timeOnly • $dateOnly";
   }
 
   static String getDob(String? date) {
@@ -133,9 +142,9 @@ class Utility {
       url = url.contains("https://www") || url.contains("http://www")
           ? url
           : url.contains("www") &&
-          (!url.contains('https') && !url.contains('http'))
-          ? 'https://' + url
-          : 'https://www.' + url;
+                  (!url.contains('https') && !url.contains('http'))
+              ? 'https://' + url
+              : 'https://www.' + url;
     } else {
       return null;
     }
@@ -294,5 +303,56 @@ class Utility {
 
   static Locale getLocale(BuildContext context) {
     return Localizations.localeOf(context);
+  }
+
+  static String getDateFormat(DateTime toCheck) {
+    final now = DateTime.now();
+    final today = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      //now.hour,
+      //now.minute,
+      //now.second,
+    );
+    final yesterday = DateTime(
+      now.year,
+      now.month,
+      now.day - 1,
+    );
+
+    final dateToCheck = toCheck;
+    final aDate = DateTime(
+      dateToCheck.year,
+      dateToCheck.month,
+      dateToCheck.day,
+      //dateToCheck.hour,
+      //dateToCheck.minute,
+      //dateToCheck.second,
+    );
+    if (aDate == now) {
+      return "now";
+    } else if (aDate == today) {
+      var diffDt = now.difference(dateToCheck);
+      if (diffDt.inHours > 0) {
+        return "${diffDt.inHours} h";
+      } else {
+        return "${diffDt.inMinutes} m";
+      }
+      //return "${DateFormat('m').format(toCheck)} m";
+      //return "today";
+      // String totalMinutes = "";
+      // var minutes = aDate.minute;
+      // print(minutes);
+      // var hours = aDate.hour;
+      // print(hours);
+      // totalMinutes += hours > 0 ? "$hours h " : "";
+      // totalMinutes += minutes > 0 ? "$minutes m" : "";
+      // return totalMinutes;
+    } else if (aDate == yesterday) {
+      return "yesterday";
+    } else {
+      return DateFormat('dd MMM').format(toCheck);
+    }
   }
 }
